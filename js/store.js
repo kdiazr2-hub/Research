@@ -18,6 +18,7 @@ const ESTADO_INICIAL = {
     transliteracion: true,
     audio: true,
     metaDiaria: 20,          // tarjetas por día
+    nivel: 'A1',             // nivel declarado: ajusta cómo te habla el tutor
     ia: {
       activa: false,
       preset: 'ollama',

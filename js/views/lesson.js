@@ -1,9 +1,10 @@
 import { el, aviso, textoRico } from '../ui.js';
-import { unidadPorId, TODO_VOCAB } from '../../data/lessons.js';
+import { unidadPorId, TODO_VOCAB, vocabHastaNivel } from '../../data/lessons.js';
 import { obtener, actualizar } from '../store.js';
 import { hablar } from '../tts.js';
 import { resumen, tarjeta, colaDelDia } from '../srs.js';
-import { ejerciciosDeUnidad, ejerciciosDeRepaso, ejercicioAleatorio, desdeIA } from '../exercises.js';
+import { ejerciciosCompletos, ejerciciosDeRepaso, ejercicioAleatorio, desdeIA,
+         ejerciciosConjugacion, ejerciciosHablar } from '../exercises.js';
 import { reproductor } from '../player.js';
 import * as IA from '../ai.js';
 
@@ -34,6 +35,8 @@ export function vistaUnidad(raiz, id) {
       onclick: () => { location.hash = `#/practica/${u.id}/ia`; },
     }),
   ]));
+
+  raiz.appendChild(el('p', { class: 'pista', text: `Nivel ${u.nivel} · ${u.vocab.length} palabras · ${u.frases.length} frases` }));
 
   // --- Gramática ---
   raiz.appendChild(el('h2', { class: 'seccion-titulo', text: 'Gramática' }));
@@ -164,7 +167,7 @@ export function vistaPractica(raiz, id, modo) {
 
   if (modo === 'ia') return practicaIA(raiz, u, conAudio);
 
-  const ejercicios = ejerciciosDeUnidad(u, { conAudio });
+  const ejercicios = ejerciciosCompletos(u, { conAudio });
   reproductor(raiz, ejercicios, {
     alTerminar: ({ precision }) => {
       actualizar((e) => {
@@ -224,6 +227,23 @@ export function vistaRepaso(raiz) {
 }
 
 export function vistaRapida(raiz) {
-  const ejercicios = Array.from({ length: 10 }, () => ejercicioAleatorio());
+  // Preferimos palabras que ya has visto alguna vez; si acabas de empezar,
+  // tiramos del vocabulario de tu nivel para no asustarte con léxico de C1.
+  const estado = obtener();
+  const vistas = TODO_VOCAB.filter((v) => estado.tarjetas[v.id]);
+  const pool = vistas.length >= 12 ? vistas : vocabHastaNivel(estado.ajustes.nivel || 'A1');
+  const ejercicios = Array.from({ length: 10 }, () => ejercicioAleatorio(pool));
   reproductor(raiz, ejercicios);
+}
+
+export function vistaConjugar(raiz) {
+  reproductor(raiz, ejerciciosConjugacion(14));
+}
+
+export function vistaHablar(raiz) {
+  const estado = obtener();
+  const nivel = estado.ajustes.nivel;
+  const orden = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1'];
+  const permitidos = nivel ? orden.slice(0, orden.indexOf(nivel) + 1) : null;
+  reproductor(raiz, ejerciciosHablar(10, permitidos));
 }

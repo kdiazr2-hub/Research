@@ -1,4 +1,4 @@
-import { el, mezclar } from '../ui.js';
+import { el, mezclar, subnav } from '../ui.js';
 import { ALFABETO, NOTAS_PRONUNCIACION } from '../../data/alphabet.js';
 import { hablar, hayVozRusa } from '../tts.js';
 
@@ -9,6 +9,7 @@ const COLORES = {
 };
 
 export function vistaAlfabeto(raiz) {
+  raiz.appendChild(subnav('alfabeto'));
   raiz.appendChild(el('header', { class: 'cabecera-vista' }, [
     el('h1', { text: 'El alfabeto cirílico' }),
     el('p', { text: '33 letras. En unas horas puedes leer (aunque no entiendas). Toca cada letra para oírla.' }),

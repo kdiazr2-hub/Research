@@ -3,7 +3,9 @@
 
 import { vistaInicio } from './views/home.js';
 import { vistaAlfabeto } from './views/alphabet.js';
-import { vistaUnidad, vistaPractica, vistaRepaso, vistaRapida } from './views/lesson.js';
+import { vistaUnidad, vistaPractica, vistaRepaso, vistaRapida, vistaConjugar, vistaHablar } from './views/lesson.js';
+import { vistaGramatica } from './views/grammar.js';
+import { vistaVerbos } from './views/verbs.js';
 import { vistaTutor } from './views/tutor.js';
 import { vistaAjustes } from './views/settings.js';
 import { vistaProgreso } from './views/progress.js';
@@ -16,11 +18,15 @@ const navegacion = document.getElementById('navegacion');
 
 const RUTAS = [
   { patron: /^\/inicio$/, vista: (r) => vistaInicio(r), nav: 'inicio' },
-  { patron: /^\/alfabeto$/, vista: (r) => vistaAlfabeto(r), nav: 'alfabeto' },
+  { patron: /^\/alfabeto$/, vista: (r) => vistaAlfabeto(r), nav: 'consulta' },
   { patron: /^\/unidad\/([\w-]+)$/, vista: (r, m) => vistaUnidad(r, m[1]), nav: 'inicio' },
   { patron: /^\/practica\/([\w-]+)(?:\/(ia))?$/, vista: (r, m) => vistaPractica(r, m[1], m[2]), nav: 'inicio', limpia: true },
   { patron: /^\/repaso$/, vista: (r) => vistaRepaso(r), nav: 'repaso', limpia: true },
   { patron: /^\/rapida$/, vista: (r) => vistaRapida(r), nav: 'repaso', limpia: true },
+  { patron: /^\/gramatica$/, vista: (r) => vistaGramatica(r), nav: 'consulta' },
+  { patron: /^\/verbos$/, vista: (r) => vistaVerbos(r), nav: 'consulta' },
+  { patron: /^\/conjugar$/, vista: (r) => vistaConjugar(r), nav: 'consulta', limpia: true },
+  { patron: /^\/hablar$/, vista: (r) => vistaHablar(r), nav: 'repaso', limpia: true },
   { patron: /^\/tutor$/, vista: (r) => vistaTutor(r), nav: 'tutor' },
   { patron: /^\/progreso$/, vista: (r) => vistaProgreso(r), nav: 'progreso' },
   { patron: /^\/ajustes$/, vista: (r) => vistaAjustes(r), nav: 'ajustes' },
@@ -28,7 +34,7 @@ const RUTAS = [
 
 const ENLACES_NAV = [
   { id: 'inicio', emoji: '🏠', texto: 'Inicio', href: '#/inicio' },
-  { id: 'alfabeto', emoji: '🔤', texto: 'Alfabeto', href: '#/alfabeto' },
+  { id: 'consulta', emoji: '📖', texto: 'Consulta', href: '#/gramatica' },
   { id: 'repaso', emoji: '🔁', texto: 'Repaso', href: '#/repaso' },
   { id: 'tutor', emoji: '💬', texto: 'Tutor', href: '#/tutor' },
   { id: 'ajustes', emoji: '⚙️', texto: 'Ajustes', href: '#/ajustes' },
@@ -87,10 +93,11 @@ function bienvenida() {
   caja.innerHTML = `
     <div class="modal__caja">
       <h2>Добро пожаловать 👋</h2>
-      <p>Bienvenido/a. Esta app te lleva del cero absoluto a defenderte en ruso.</p>
+      <p>Bienvenido/a. Un curso completo de ruso: del alfabeto (A0) al nivel avanzado (C1), 46 unidades y 752 palabras.</p>
       <ol class="modal__lista">
         <li><strong>Empieza por el alfabeto.</strong> Con leer cirílico ya ganas media batalla.</li>
         <li><strong>Haz la Unidad 1</strong> y luego el <strong>repaso diario</strong>: son 5 minutos y es lo que de verdad fija las palabras.</li>
+        <li><strong>Habla desde el primer día.</strong> En «Hablar» el móvil te escucha y te puntúa la pronunciación.</li>
         <li><strong>Opcional:</strong> conecta un modelo de IA local (Ollama o una app del iPhone) para tener tutor y ejercicios infinitos.</li>
       </ol>
       <button class="boton boton--principal boton--ancho">¡Vamos!</button>

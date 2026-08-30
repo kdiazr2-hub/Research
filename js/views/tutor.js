@@ -88,7 +88,7 @@ export function vistaTutor(raiz) {
     try {
       let respuesta = '';
       const mensajes = [
-        { role: 'system', content: IA.SISTEMA_TUTOR },
+        { role: 'system', content: IA.sistemaTutor() },
         ...obtener().chat.slice(-12),
       ];
       await IA.chat(mensajes, {

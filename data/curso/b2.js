@@ -1,0 +1,445 @@
+// Nivel B2: la lengua escrita y culta.
+// Participios, gerundios, pasiva y las partículas que dan color al ruso hablado.
+
+export const B2 = [
+  {
+    id: 'u33',
+    emoji: '📜',
+    nivel: 'B2',
+    titulo: 'Participios activos',
+    descripcion: 'Convertir "el hombre que lee" en una sola palabra. Aparecen en todo texto escrito.',
+    gramatica: [
+      {
+        titulo: 'Qué son y para qué',
+        texto: 'Un participio activo es un verbo convertido en adjetivo: **читающий** = "que lee / leyente". Sustituye a una subordinada con который cuando который sería sujeto.\n\nЧеловек, **который читает** книгу → Человек, **читающий** книгу.\n\nSon rarísimos al hablar y omnipresentes al leer: prensa, contratos, literatura.',
+        ejemplos: [
+          { ru: 'студент, изучающий русский язык', tr: 'studiént, izucháiuschi rúski iazýk', es: 'el estudiante que estudia ruso' },
+          { ru: 'люди, живущие в городе', tr: 'liúdi, zhyvúschie v górodie', es: 'la gente que vive en la ciudad' },
+        ],
+      },
+      {
+        titulo: 'Cómo se forman',
+        texto: '**Presente:** coge la forma de "они", quita la -т y añade **-щий**: читают→читающий, говорят→говорящий, живут→живущий. Solo existe en verbos imperfectivos.\n**Pasado:** coge el pasado masculino, quita la -л y añade **-вший**: читал→читавший, сказал→сказавший.',
+        ejemplos: [
+          { ru: 'работающий человек', tr: 'rabótaiuschi chilaviék', es: 'una persona que trabaja' },
+          { ru: 'учёный, открывший этот закон', tr: 'uchióny, atkrývshy état zakón', es: 'el científico que descubrió esta ley' },
+        ],
+      },
+      {
+        titulo: 'Se declinan como adjetivos',
+        texto: 'Terminan en -щий / -вший y se comportan como хороший: concuerdan en género, número y caso con la palabra a la que acompañan. Y cuando llevan complementos, se separan con comas.',
+        ejemplos: [
+          { ru: 'Я говорил с человеком, работающим здесь.', tr: 'Ya gavaríl s chilaviékam, rabótaiuschim zdies.', es: 'Hablé con la persona que trabaja aquí.' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'следующий', tr: 'sliéduischi', es: 'siguiente', cat: 'participio' },
+      { ru: 'подходящий', tr: 'padjadiáschi', es: 'adecuado, apropiado', cat: 'participio' },
+      { ru: 'действующий', tr: 'diéistvuiuschi', es: 'vigente, en funcionamiento', cat: 'participio' },
+      { ru: 'существующий', tr: 'suschestvúiuschi', es: 'existente', cat: 'participio' },
+      { ru: 'выдающийся', tr: 'vydaiúschisia', es: 'destacado, sobresaliente', cat: 'participio' },
+      { ru: 'бывший', tr: 'bývshy', es: 'ex, antiguo', cat: 'participio' },
+      { ru: 'происходить', tr: 'praisjadít', es: 'ocurrir, suceder', cat: 'verbo' },
+      { ru: 'существовать', tr: 'suschestvavát', es: 'existir', cat: 'verbo' },
+      { ru: 'развиваться', tr: 'razvivátsa', es: 'desarrollarse', cat: 'verbo' },
+      { ru: 'появляться', tr: 'apavliátsa', es: 'aparecer', cat: 'verbo' },
+      { ru: 'учёный', tr: 'uchióny', es: 'científico', cat: 'sustantivo' },
+      { ru: 'исследование', tr: 'islédavanie', es: 'investigación', cat: 'sustantivo' },
+      { ru: 'закон', tr: 'zakón', es: 'ley', cat: 'sustantivo' },
+      { ru: 'явление', tr: 'iavliénie', es: 'fenómeno', cat: 'sustantivo' },
+      { ru: 'область', tr: 'óblast', es: 'ámbito, región', cat: 'sustantivo' },
+      { ru: 'общество', tr: 'ópschestva', es: 'sociedad', cat: 'sustantivo' },
+    ],
+    frases: [
+      { ru: 'Это книга, написанная известным автором.', tr: 'Éta kníga, napísanaia izviésnym aftaram.', es: 'Es un libro escrito por un autor conocido.' },
+      { ru: 'Люди, говорящие на двух языках, думают иначе.', tr: 'Liúdi, gavariáschie na dvuj iazykáj, dúmaiut ináche.', es: 'Las personas que hablan dos lenguas piensan de otra manera.' },
+      { ru: 'Мой бывший начальник переехал в Москву.', tr: 'Moi bývshy nachálnik piriiéjal v Maskvú.', es: 'Mi antiguo jefe se mudó a Moscú.' },
+    ],
+  },
+
+  {
+    id: 'u34',
+    emoji: '🏗️',
+    nivel: 'B2',
+    titulo: 'Participios pasivos',
+    descripcion: '"Escrito", "construido", "abierto": el otro medio participio, y el más útil de los dos.',
+    gramatica: [
+      {
+        titulo: 'La forma larga',
+        texto: 'Del pasado perfectivo con **-нный / -енный / -тый**: прочитать→прочитанный, построить→построенный, открыть→открытый. Significa "que ha sido…".',
+        ejemplos: [
+          { ru: 'прочитанная книга', tr: 'prachítanaia kníga', es: 'un libro leído' },
+          { ru: 'недавно построенный дом', tr: 'nidávna pastróienny dom', es: 'una casa construida hace poco' },
+        ],
+      },
+      {
+        titulo: 'La forma corta: la que de verdad usarás',
+        texto: 'Quita la terminación larga y quedan formas cortísimas que funcionan como predicado, con una -н sola: **прочитан, прочитана, прочитано, прочитаны**. Con был/будет das el tiempo.\n\nМагазин **закрыт**. Работа **сделана**. Дом **был построен** в 1900 году.',
+        ejemplos: [
+          { ru: 'Магазин закрыт.', tr: 'Magazín zakrýt.', es: 'La tienda está cerrada.' },
+          { ru: 'Всё готово.', tr: 'Fsio gatóva.', es: 'Todo está listo.' },
+          { ru: 'Письмо было отправлено вчера.', tr: 'Pismó býla atprávlieno fchirá.', es: 'La carta fue enviada ayer.' },
+        ],
+      },
+      {
+        titulo: 'Quién hizo la acción va en instrumental',
+        texto: 'Igual que el "por" español: Книга написана **Толстым** (el libro fue escrito por Tolstói). Este instrumental agente es marca de estilo escrito.',
+        ejemplos: [
+          { ru: 'Дом построен рабочими.', tr: 'Dom pastróien rabóchimi.', es: 'La casa fue construida por los obreros.' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'закрыт', tr: 'zakrýt', es: 'cerrado', cat: 'participio' },
+      { ru: 'открыт', tr: 'atkrýt', es: 'abierto', cat: 'participio' },
+      { ru: 'занят', tr: 'zániat', es: 'ocupado', cat: 'participio' },
+      { ru: 'свободен', tr: 'svabódien', es: 'libre', cat: 'adjetivo corto' },
+      { ru: 'готов', tr: 'gatóf', es: 'listo, preparado', cat: 'adjetivo corto' },
+      { ru: 'построить', tr: 'pastróit', es: 'construir', cat: 'verbo' },
+      { ru: 'создать', tr: 'sazdát', es: 'crear', cat: 'verbo' },
+      { ru: 'основать', tr: 'asnavát', es: 'fundar', cat: 'verbo' },
+      { ru: 'отправить', tr: 'atprávit', es: 'enviar', cat: 'verbo' },
+      { ru: 'запретить', tr: 'zapritít', es: 'prohibir', cat: 'verbo' },
+      { ru: 'разрешить', tr: 'razrishýt', es: 'permitir', cat: 'verbo' },
+      { ru: 'известный', tr: 'izviésny', es: 'conocido, famoso', cat: 'adjetivo' },
+      { ru: 'необходимый', tr: 'niabjadímy', es: 'imprescindible', cat: 'adjetivo' },
+      { ru: 'здание', tr: 'zdánie', es: 'edificio', cat: 'sustantivo' },
+      { ru: 'век', tr: 'viek', es: 'siglo', cat: 'sustantivo' },
+      { ru: 'автор', tr: 'áftar', es: 'autor', cat: 'sustantivo' },
+    ],
+    frases: [
+      { ru: 'Извините, здесь занято.', tr: 'Izvinítie, zdies zániata.', es: 'Perdone, este sitio está ocupado.' },
+      { ru: 'Музей открыт с десяти до шести.', tr: 'Muziéi atkrýt s disiatí da shystí.', es: 'El museo está abierto de diez a seis.' },
+      { ru: 'Этот город был основан в 1147 году.', tr: 'État górat byl asnaván v týsiacha sto sórak siedmóm gadú.', es: 'Esta ciudad fue fundada en 1147.' },
+      { ru: 'Курить здесь запрещено.', tr: 'Kurít zdies zaprischinó.', es: 'Está prohibido fumar aquí.' },
+    ],
+  },
+
+  {
+    id: 'u35',
+    emoji: '🔀',
+    nivel: 'B2',
+    titulo: 'Gerundios (деепричастия)',
+    descripcion: 'Dos acciones a la vez en una sola frase, sin repetir sujeto.',
+    gramatica: [
+      {
+        titulo: 'Simultáneo: -я',
+        texto: 'Del presente imperfectivo, quita la terminación de "они" y añade **-я**: читают→**читая**, говорят→**говоря**, идут→**идя**. Significa "mientras…", "haciendo…".\n\n**Читая книгу, я слушал музыку** = Mientras leía, escuchaba música.',
+        ejemplos: [
+          { ru: 'Гуляя по городу, мы фотографировали.', tr: 'Guliáia pa górodu, my fatagrafíravali.', es: 'Paseando por la ciudad, hacíamos fotos.' },
+          { ru: 'Он говорил, улыбаясь.', tr: 'On gavaríl, ulybáias.', es: 'Hablaba sonriendo.' },
+        ],
+      },
+      {
+        titulo: 'Anterior: -в',
+        texto: 'Del pasado perfectivo, quita la -л y añade **-в**: прочитал→**прочитав**, сказал→**сказав**. Significa "después de haber…".\n\n**Прочитав книгу, я лёг спать** = Tras leer el libro, me acosté.',
+        ejemplos: [
+          { ru: 'Закончив работу, он ушёл.', tr: 'Zakónchif rabótu, on ushól.', es: 'Habiendo terminado el trabajo, se fue.' },
+          { ru: 'Придя домой, я сразу позвонил.', tr: 'Pridiá damói, ya srázu pazvaníl.', es: 'Al llegar a casa, llamé enseguida.' },
+        ],
+      },
+      {
+        titulo: 'La regla que no puedes romper',
+        texto: 'El gerundio y el verbo principal deben tener **el mismo sujeto**. "Читая книгу, зазвонил телефон" es incorrecto en ruso (y suena raro también en español: *leyendo el libro, sonó el teléfono*).',
+        ejemplos: [
+          { ru: 'Не зная адреса, я не смог прийти.', tr: 'Nie znáia ádriesa, ya nie smok priití.', es: 'Al no saber la dirección, no pude venir.' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'гулять', tr: 'guliát', es: 'pasear', cat: 'verbo' },
+      { ru: 'фотографировать', tr: 'fatagrafíravat', es: 'fotografiar', cat: 'verbo' },
+      { ru: 'смочь', tr: 'smoch', es: 'poder (perfectivo)', cat: 'verbo', nota: 'pasado смог, смогла.' },
+      { ru: 'заметить', tr: 'zamiétit', es: 'notar, darse cuenta', cat: 'verbo' },
+      { ru: 'обсуждать', tr: 'apsuzhdát', es: 'discutir, debatir', cat: 'verbo' },
+      { ru: 'сравнивать', tr: 'srávnivat', es: 'comparar', cat: 'verbo' },
+      { ru: 'учитывать', tr: 'uchítyvat', es: 'tener en cuenta', cat: 'verbo' },
+      { ru: 'несмотря на', tr: 'nismatriá na', es: 'a pesar de', cat: 'preposición' },
+      { ru: 'благодаря', tr: 'blagadariá', es: 'gracias a', cat: 'preposición', nota: '+ dativo.' },
+      { ru: 'из-за', tr: 'iz-za', es: 'por culpa de', cat: 'preposición', nota: '+ genitivo.' },
+      { ru: 'таким образом', tr: 'takím óbrazam', es: 'de este modo', cat: 'conector' },
+      { ru: 'в результате', tr: 'v rizultátie', es: 'como resultado', cat: 'conector' },
+      { ru: 'вместо', tr: 'vmiésta', es: 'en lugar de', cat: 'preposición' },
+      { ru: 'адрес', tr: 'ádries', es: 'dirección', cat: 'sustantivo' },
+      { ru: 'внимание', tr: 'vnimánie', es: 'atención', cat: 'sustantivo' },
+    ],
+    frases: [
+      { ru: 'Не зная языка, трудно найти работу.', tr: 'Nie znáia iazyká, trúdna naití rabótu.', es: 'Sin saber el idioma es difícil encontrar trabajo.' },
+      { ru: 'Несмотря на дождь, мы пошли гулять.', tr: 'Nismatriá na dozht, my pashlí guliát.', es: 'A pesar de la lluvia, salimos a pasear.' },
+      { ru: 'Благодаря тебе я всё понял.', tr: 'Blagadariá tibié ya fsio pónial.', es: 'Gracias a ti lo he entendido todo.' },
+    ],
+  },
+
+  {
+    id: 'u36',
+    emoji: '🌀',
+    nivel: 'B2',
+    titulo: 'Pasiva e impersonales',
+    descripcion: 'Cómo dice el ruso lo que en español decimos con "se".',
+    gramatica: [
+      {
+        titulo: 'Tres maneras de quitar al sujeto',
+        texto: '1. **3ª del plural sin pronombre**: Здесь строят дом (aquí construyen/se construye una casa). Es la más coloquial.\n2. **Verbo con -ся**: Дом строится (la casa se construye). Habitual en textos.\n3. **Participio pasivo corto**: Дом построен (la casa está construida). Para resultados.',
+        ejemplos: [
+          { ru: 'В России говорят по-русски.', tr: 'V Rassíi gavariát pa-rúski.', es: 'En Rusia se habla ruso.' },
+          { ru: 'Этот вопрос решается сейчас.', tr: 'État vaprós rishaietsa sichás.', es: 'Esta cuestión se está resolviendo ahora.' },
+          { ru: 'Вопрос решён.', tr: 'Vaprós rishón.', es: 'La cuestión está resuelta.' },
+        ],
+      },
+      {
+        titulo: 'Impersonales con dativo',
+        texto: 'Un grupo enorme de frases sin sujeto donde la persona va en dativo: **мне холодно, мне кажется, мне удалось, мне не спится, нам повезло**. Se traducen con "me/nos" en español.',
+        ejemplos: [
+          { ru: 'Мне кажется, что он прав.', tr: 'Mnie kázhetsa, shto on praf.', es: 'Me parece que tiene razón.' },
+          { ru: 'Нам повезло с погодой.', tr: 'Nam paviezló s pagódai.', es: 'Tuvimos suerte con el tiempo.' },
+          { ru: 'Мне удалось найти билеты.', tr: 'Mnie udalós naití biliéty.', es: 'Conseguí encontrar entradas.' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'казаться', tr: 'kazátsa', es: 'parecer', cat: 'verbo' },
+      { ru: 'удаваться', tr: 'udavátsa', es: 'lograr, conseguir', cat: 'verbo' },
+      { ru: 'везти', tr: 'viestí', es: 'tener suerte', cat: 'verbo', nota: 'Мне везёт = tengo suerte.' },
+      { ru: 'требоваться', tr: 'triébavatsa', es: 'requerirse, hacer falta', cat: 'verbo' },
+      { ru: 'считаться', tr: 'schitátsa', es: 'ser considerado', cat: 'verbo' },
+      { ru: 'решаться', tr: 'rishátsa', es: 'resolverse; atreverse', cat: 'verbo' },
+      { ru: 'использоваться', tr: 'ispólzavatsa', es: 'usarse', cat: 'verbo' },
+      { ru: 'производить', tr: 'praizvadít', es: 'producir', cat: 'verbo' },
+      { ru: 'вопрос', tr: 'vaprós', es: 'pregunta, cuestión', cat: 'sustantivo' },
+      { ru: 'решение', tr: 'rishénie', es: 'decisión, solución', cat: 'sustantivo' },
+      { ru: 'условие', tr: 'uslóvie', es: 'condición', cat: 'sustantivo' },
+      { ru: 'уровень', tr: 'úravien', es: 'nivel', cat: 'sustantivo' },
+      { ru: 'значение', tr: 'znachénie', es: 'significado, importancia', cat: 'sustantivo' },
+      { ru: 'способ', tr: 'spósap', es: 'modo, método', cat: 'sustantivo' },
+      { ru: 'по-моему', tr: 'pa-móiemu', es: 'en mi opinión', cat: 'expresión' },
+    ],
+    frases: [
+      { ru: 'Мне кажется, это хорошая идея.', tr: 'Mnie kázhetsa, éta jaróshaia idéia.', es: 'Me parece que es una buena idea.' },
+      { ru: 'Здесь принимают карты?', tr: '¿Zdies prinimáiut kárty?', es: '¿Aquí aceptan tarjeta?' },
+      { ru: 'Этот вопрос обсуждается уже давно.', tr: 'État vaprós apsuzhdáietsa uzhé davnó.', es: 'Esta cuestión lleva mucho tiempo debatiéndose.' },
+    ],
+  },
+
+  {
+    id: 'u37',
+    emoji: '✨',
+    nivel: 'B2',
+    titulo: 'Partículas modales',
+    descripcion: 'Las palabritas que no se traducen y que hacen que suenes ruso de verdad.',
+    gramatica: [
+      {
+        titulo: 'же, ведь, -то',
+        texto: '**же** subraya lo evidente o marca impaciencia: Что же делать? (¿pero qué hacemos?), Я же говорил! (¡si ya te lo dije!).\n**ведь** apela a algo que ambos sabéis: Ты ведь знаешь его (si tú lo conoces…).\n**-то** matiza suavemente: Я-то знаю (yo sí que lo sé).',
+        ejemplos: [
+          { ru: 'Я же тебе говорил!', tr: '¡Ya zhe tibié gavaríl!', es: '¡Si te lo dije!' },
+          { ru: 'Ведь это правда.', tr: 'Viet éta právda.', es: 'Pero si es verdad.' },
+        ],
+      },
+      {
+        titulo: 'ли, разве, неужели',
+        texto: '**ли** hace preguntas indirectas o dubitativas: Не знаю, придёт **ли** он (no sé si vendrá).\n**разве / неужели** expresan sorpresa o incredulidad: Разве ты не знал? (¿pero es que no lo sabías?), Неужели правда? (¿de verdad?).',
+        ejemplos: [
+          { ru: 'Я не знаю, будет ли он дома.', tr: 'Ya nie znáiu, búdiet li on dóma.', es: 'No sé si estará en casa.' },
+          { ru: 'Неужели ты забыл?', tr: '¿Niuzhéli ty zabýl?', es: '¿En serio se te ha olvidado?' },
+        ],
+      },
+      {
+        titulo: '-то, -нибудь, кое-: algo, alguien, cualquiera',
+        texto: '**-то** = existe, pero no sé cuál: Кто-то звонил (alguien llamó).\n**-нибудь** = cualquiera, da igual cuál: Спроси кого-нибудь (pregunta a alguien).\nRegla práctica: pasado → -то; futuro, imperativo o pregunta → -нибудь.',
+        ejemplos: [
+          { ru: 'Кто-то оставил сумку.', tr: 'Któ-ta astávil súmku.', es: 'Alguien se ha dejado un bolso.' },
+          { ru: 'Расскажи что-нибудь!', tr: '¡Raskazhý shtó-nibut!', es: '¡Cuéntame algo!' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'же', tr: 'zhe', es: 'partícula de énfasis', cat: 'partícula' },
+      { ru: 'ведь', tr: 'viet', es: 'si es que, pero si', cat: 'partícula' },
+      { ru: 'ли', tr: 'li', es: 'si (interrogativo)', cat: 'partícula' },
+      { ru: 'разве', tr: 'rázvie', es: '¿acaso?', cat: 'partícula' },
+      { ru: 'неужели', tr: 'niuzhéli', es: '¿de verdad?, ¿en serio?', cat: 'partícula' },
+      { ru: 'кто-то', tr: 'któ-ta', es: 'alguien (concreto)', cat: 'indefinido' },
+      { ru: 'что-то', tr: 'shtó-ta', es: 'algo (concreto)', cat: 'indefinido' },
+      { ru: 'кто-нибудь', tr: 'któ-nibut', es: 'alguien (cualquiera)', cat: 'indefinido' },
+      { ru: 'что-нибудь', tr: 'shtó-nibut', es: 'algo (cualquier cosa)', cat: 'indefinido' },
+      { ru: 'где-то', tr: 'gdié-ta', es: 'en algún sitio', cat: 'indefinido' },
+      { ru: 'как-то', tr: 'kák-ta', es: 'de algún modo; una vez', cat: 'indefinido' },
+      { ru: 'вообще', tr: 'vaapschié', es: 'en general; para nada', cat: 'adverbio' },
+      { ru: 'вроде', tr: 'vródie', es: 'como que, parece que', cat: 'partícula' },
+      { ru: 'просто', tr: 'prósta', es: 'simplemente', cat: 'adverbio' },
+      { ru: 'даже', tr: 'dázhe', es: 'incluso', cat: 'partícula' },
+      { ru: 'зато', tr: 'zató', es: 'en cambio, pero a cambio', cat: 'conjunción' },
+    ],
+    frases: [
+      { ru: 'Ну что же ты молчишь?', tr: '¿Nu shto zhe ty malchísh?', es: 'Pero bueno, ¿por qué te callas?' },
+      { ru: 'Ты ведь обещал!', tr: '¡Ty viet abischál!', es: '¡Pero si lo prometiste!' },
+      { ru: 'Дайте мне что-нибудь попить.', tr: 'Daítie mnie shtó-nibut papít.', es: 'Deme algo de beber.' },
+      { ru: 'Разве это дорого?', tr: '¿Rázvie éta dóraga?', es: '¿Acaso es caro?' },
+    ],
+  },
+
+  {
+    id: 'u38',
+    emoji: '💬',
+    nivel: 'B2',
+    titulo: 'Contar, opinar y discutir',
+    descripcion: 'Verbos de habla, matices de opinión y cómo llevar una conversación larga.',
+    gramatica: [
+      {
+        titulo: 'Los verbos de habla no son intercambiables',
+        texto: '**говорить** (hablar, decir en general) · **сказать** (decir algo concreto, una vez) · **рассказывать** (contar, narrar) · **разговаривать** (conversar) · **обсуждать** (debatir) · **спорить** (discutir, pelear con argumentos) · **сообщать** (comunicar, formal).',
+        ejemplos: [
+          { ru: 'Расскажи, как прошёл день.', tr: 'Raskazhý, kak prashól dien.', es: 'Cuéntame qué tal el día.' },
+          { ru: 'Мы долго разговаривали.', tr: 'My dólga razgavárivali.', es: 'Estuvimos hablando mucho rato.' },
+          { ru: 'Не будем спорить.', tr: 'Nie búdiem spórit.', es: 'No discutamos.' },
+        ],
+      },
+      {
+        titulo: 'Marcar tu opinión',
+        texto: 'Escala de seguridad, de menos a más: **кажется** (parece) · **по-моему** (en mi opinión) · **я считаю, что** (considero que) · **я уверен, что** (estoy seguro de que) · **очевидно, что** (es evidente que). Y para discrepar sin ofender: **я не совсем согласен** (no estoy del todo de acuerdo).',
+        ejemplos: [
+          { ru: 'По-моему, это не самая лучшая идея.', tr: 'Pa-móiemu, éta nie sámaia lúchshaia idéia.', es: 'En mi opinión, no es la mejor idea.' },
+          { ru: 'Я не совсем согласен с вами.', tr: 'Ya nie safsiém saglásien s vámi.', es: 'No estoy del todo de acuerdo con usted.' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'рассказывать', tr: 'raskázyvat', es: 'contar, narrar', cat: 'verbo' },
+      { ru: 'разговаривать', tr: 'razgavárivat', es: 'conversar', cat: 'verbo' },
+      { ru: 'спорить', tr: 'spórit', es: 'discutir, debatir', cat: 'verbo' },
+      { ru: 'сообщать', tr: 'saapschát', es: 'comunicar, informar', cat: 'verbo' },
+      { ru: 'соглашаться', tr: 'saglashátsa', es: 'estar de acuerdo', cat: 'verbo' },
+      { ru: 'возражать', tr: 'vazrazhát', es: 'objetar', cat: 'verbo' },
+      { ru: 'уверен', tr: 'uviérien', es: 'seguro (de algo)', cat: 'adjetivo corto' },
+      { ru: 'очевидно', tr: 'achivídna', es: 'evidentemente', cat: 'adverbio' },
+      { ru: 'на самом деле', tr: 'na sámam diélie', es: 'en realidad', cat: 'expresión' },
+      { ru: 'с одной стороны', tr: 's adnói staraný', es: 'por un lado', cat: 'conector' },
+      { ru: 'с другой стороны', tr: 's drugói staraný', es: 'por otro lado', cat: 'conector' },
+      { ru: 'например', tr: 'naprimiér', es: 'por ejemplo', cat: 'conector' },
+      { ru: 'то есть', tr: 'to iest', es: 'es decir', cat: 'conector' },
+      { ru: 'в общем', tr: 'v ópschem', es: 'en general, en resumen', cat: 'conector' },
+      { ru: 'мнение', tr: 'mniénie', es: 'opinión', cat: 'sustantivo' },
+      { ru: 'точка зрения', tr: 'tóchka zriénia', es: 'punto de vista', cat: 'sustantivo' },
+    ],
+    frases: [
+      { ru: 'Расскажи мне о своей работе.', tr: 'Raskazhý mnie a svaiéi rabótie.', es: 'Háblame de tu trabajo.' },
+      { ru: 'С одной стороны да, но с другой стороны нет.', tr: 'S adnói staraný da, no s drugói staraný niet.', es: 'Por un lado sí, pero por otro no.' },
+      { ru: 'Я уверен, что всё получится.', tr: 'Ya uviérien, shto fsio paluchitsa.', es: 'Estoy seguro de que todo saldrá bien.' },
+      { ru: 'Что ты об этом думаешь?', tr: '¿Shto ty ab étam dúmaiesh?', es: '¿Qué opinas de esto?' },
+    ],
+  },
+
+  {
+    id: 'u39',
+    emoji: '🧬',
+    nivel: 'B2',
+    titulo: 'Cómo se fabrican las palabras',
+    descripcion: 'Con veinte prefijos y sufijos deduces miles de palabras sin diccionario.',
+    gramatica: [
+      {
+        titulo: 'Sufijos que forman sustantivos',
+        texto: '**-ость** → cualidad abstracta: новый→новость (novedad), возможный→возможность.\n**-ение / -ание** → acción: решать→решение, образовать→образование.\n**-тель / -ник** → quien hace: учить→учитель, работать→работник.\n**-ство** → conjunto o estado: общий→общество, богатый→богатство.',
+        ejemplos: [
+          { ru: 'учить → учитель', tr: 'uchít → uchítiel', es: 'enseñar → profesor' },
+          { ru: 'строить → строительство', tr: 'stróit → straítielstva', es: 'construir → construcción' },
+        ],
+      },
+      {
+        titulo: 'Prefijos que cambian el sentido',
+        texto: '**не-** niega: возможно→невозможно.\n**без-/бес-** = sin: работа→безработный (parado).\n**пере-** = re-, volver a: писать→переписать.\n**раз-/рас-** = deshacer o dispersar: любить→разлюбить.\n**со-** = co-: работать→сотрудник (colega).',
+        ejemplos: [
+          { ru: 'Это невозможно.', tr: 'Éta niavazmózhna.', es: 'Eso es imposible.' },
+          { ru: 'Мне надо переделать работу.', tr: 'Mnie náda piridiélat rabótu.', es: 'Tengo que rehacer el trabajo.' },
+        ],
+      },
+      {
+        titulo: 'Diminutivos: el alma del ruso coloquial',
+        texto: 'Con **-ик, -ок, -чка, -ушка** los rusos hacen cariñoso casi todo: дом→домик, кот→котик, мама→мамочка, чай→чаёк. No son solo "pequeño": expresan afecto o cercanía. Un camarero puede ofrecerte «чаёк».',
+        ejemplos: [
+          { ru: 'Хочешь кофейку?', tr: '¿Jóchesh kafiikú?', es: '¿Te apetece un cafelito?' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'новость', tr: 'nóvast', es: 'noticia', cat: 'sustantivo' },
+      { ru: 'возможность', tr: 'vazmózhnast', es: 'posibilidad', cat: 'sustantivo' },
+      { ru: 'скорость', tr: 'skórast', es: 'velocidad', cat: 'sustantivo' },
+      { ru: 'сотрудник', tr: 'satrúdnik', es: 'empleado, colega', cat: 'sustantivo' },
+      { ru: 'работник', tr: 'rabótnik', es: 'trabajador', cat: 'sustantivo' },
+      { ru: 'строительство', tr: 'straítielstva', es: 'construcción', cat: 'sustantivo' },
+      { ru: 'государство', tr: 'gasudárstva', es: 'Estado', cat: 'sustantivo' },
+      { ru: 'богатство', tr: 'bagátstva', es: 'riqueza', cat: 'sustantivo' },
+      { ru: 'невозможно', tr: 'niavazmózhna', es: 'imposible', cat: 'adjetivo' },
+      { ru: 'безработный', tr: 'bizrabótny', es: 'parado, desempleado', cat: 'adjetivo' },
+      { ru: 'переделать', tr: 'piridiélat', es: 'rehacer', cat: 'verbo' },
+      { ru: 'пересмотреть', tr: 'pirismatriét', es: 'revisar, replantear', cat: 'verbo' },
+      { ru: 'развитие', tr: 'razvítie', es: 'desarrollo', cat: 'sustantivo' },
+      { ru: 'изменение', tr: 'izminiénie', es: 'cambio', cat: 'sustantivo' },
+      { ru: 'поведение', tr: 'pavidiénie', es: 'comportamiento', cat: 'sustantivo' },
+      { ru: 'отношение', tr: 'atnashénie', es: 'relación, actitud', cat: 'sustantivo' },
+    ],
+    frases: [
+      { ru: 'Какие новости?', tr: '¿Kakíe nóvasti?', es: '¿Qué hay de nuevo?' },
+      { ru: 'У меня нет такой возможности.', tr: 'U miniá niet takói vazmózhnasti.', es: 'No tengo esa posibilidad.' },
+      { ru: 'Это невозможно объяснить.', tr: 'Éta niavazmózhna abiasnít.', es: 'Eso es imposible de explicar.' },
+    ],
+  },
+
+  {
+    id: 'u40',
+    emoji: '🎩',
+    nivel: 'B2',
+    titulo: 'Registros: de la calle a la carta formal',
+    descripcion: 'Lo mismo se dice de tres maneras según con quién hables. Elegir mal chirría.',
+    gramatica: [
+      {
+        titulo: 'Tres niveles',
+        texto: 'Compara "quiero comer":\n**Coloquial:** Жрать охота (muy vulgar) / Есть хочу.\n**Neutro:** Я хочу есть.\n**Formal:** Я хотел бы пообедать.\nEl salto lo dan sobre todo: бы, вы, los diminutivos (coloquial) y los sustantivos verbales en -ение (formal).',
+        ejemplos: [
+          { ru: 'Дай мне ручку.', tr: 'Dai mnie rúchku.', es: 'Dame un boli. (informal)' },
+          { ru: 'Не могли бы вы дать мне ручку?', tr: '¿Nie maglí by vy dat mnie rúchku?', es: '¿Podría darme un bolígrafo? (formal)' },
+        ],
+      },
+      {
+        titulo: 'Escribir un correo',
+        texto: 'Apertura: **Уважаемый Иван Петрович!** (formal, con nombre y patronímico) o **Здравствуйте, Анна!** (neutro).\nCierre: **С уважением, [nombre]** (atentamente).\nY el clásico: **Заранее спасибо** (gracias de antemano).',
+        ejemplos: [
+          { ru: 'Уважаемая Мария Ивановна!', tr: '¡Uvazháiemaia María Ivánavna!', es: 'Estimada María Ivánovna:' },
+          { ru: 'С уважением, Хуан.', tr: 'S uvazhéniem, Juán.', es: 'Atentamente, Juan.' },
+        ],
+      },
+      {
+        titulo: 'El patronímico',
+        texto: 'En contextos formales a la gente se le llama por **nombre + patronímico**: Иван Петрович (Iván, hijo de Piotr), Мария Ивановна. Es el equivalente ruso de "señor/señora" y usarlo bien causa muy buena impresión.',
+        ejemplos: [
+          { ru: 'Здравствуйте, Сергей Николаевич!', tr: '¡Zdrástvuitie, Sirguéi Nikaláievich!', es: '¡Buenos días, Serguéi Nikoláievich!' },
+        ],
+      },
+    ],
+    vocab: [
+      { ru: 'уважаемый', tr: 'uvazháiemy', es: 'estimado', cat: 'formal' },
+      { ru: 'с уважением', tr: 's uvazhéniem', es: 'atentamente', cat: 'formal' },
+      { ru: 'заранее', tr: 'zaránie', es: 'de antemano', cat: 'adverbio' },
+      { ru: 'обратиться', tr: 'abratítsa', es: 'dirigirse (a alguien)', cat: 'verbo' },
+      { ru: 'пожалуйста', tr: 'pazhálusta', es: 'por favor', cat: 'cortesía' },
+      { ru: 'приветствую', tr: 'priviétstvuiu', es: 'saludos (semiformal)', cat: 'formal' },
+      { ru: 'привет', tr: 'privét', es: 'hola (informal)', cat: 'coloquial' },
+      { ru: 'здорово', tr: 'zdaróva', es: '¡genial!; ¿qué tal?', cat: 'coloquial' },
+      { ru: 'классно', tr: 'klásna', es: 'guay, genial', cat: 'coloquial' },
+      { ru: 'ладно', tr: 'ládna', es: 'vale, de acuerdo', cat: 'coloquial' },
+      { ru: 'наверно', tr: 'naviérna', es: 'a lo mejor', cat: 'coloquial' },
+      { ru: 'короче', tr: 'karóche', es: 'en resumen, o sea', cat: 'coloquial' },
+      { ru: 'слушай', tr: 'slúshai', es: 'oye', cat: 'coloquial' },
+      { ru: 'отчество', tr: 'ótchestva', es: 'patronímico', cat: 'sustantivo' },
+      { ru: 'фамилия', tr: 'família', es: 'apellido', cat: 'sustantivo' },
+      { ru: 'письмо', tr: 'pismó', es: 'carta, correo', cat: 'sustantivo' },
+    ],
+    frases: [
+      { ru: 'Уважаемые коллеги, добрый день!', tr: '¡Uvazháiemyie kaliégui, dóbry dien!', es: 'Estimados compañeros, buenos días.' },
+      { ru: 'Заранее спасибо за ответ.', tr: 'Zaránie spasíba za atviét.', es: 'Gracias de antemano por su respuesta.' },
+      { ru: 'Короче, я не пойду.', tr: 'Karóche, ya nie paidú.', es: 'En resumen, que no voy.' },
+      { ru: 'Слушай, а давай встретимся!', tr: '¡Slúshai, a davái fstriétimsia!', es: 'Oye, ¿y si quedamos?' },
+    ],
+  },
+];

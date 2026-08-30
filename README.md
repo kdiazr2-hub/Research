@@ -1,8 +1,10 @@
 # Русский — app para aprender ruso desde cero
 
-Una aplicación tipo Duolingo/Busuu para **hispanohablantes que empiezan el ruso desde cero**,
-con **repetición espaciada** y un **tutor de IA que corre en tu propio dispositivo**
-(Ollama en el ordenador, apps tipo LM Pocket en el iPhone).
+Una aplicación tipo Duolingo/Busuu para **hispanohablantes**, con el curso completo
+**del alfabeto (A0) al nivel avanzado (C1)**: 46 unidades, 752 palabras y 182 frases.
+Incluye **repetición espaciada**, **práctica de pronunciación con tu voz** y un
+**tutor de IA que corre en tu propio dispositivo** (Ollama en el ordenador,
+apps tipo LM Pocket en el iPhone).
 
 - Funciona **sin internet** y **sin cuenta**: tu progreso se guarda solo en tu navegador.
 - Se instala como app en el iPhone y en el PC (es una PWA).
@@ -57,17 +59,38 @@ Una vez instalada funciona aunque apagues el servidor o te quedes sin cobertura.
 3. **Haz el repaso diario.** Es lo más importante: 5 minutos al día valen más que 2 horas
    el domingo. La app calcula qué palabras estás a punto de olvidar y te las pregunta justo
    ese día (algoritmo de repetición espaciada, el mismo principio que Anki).
-4. **Habla con el tutor** cuando tengas dudas o quieras practicar frases libres (necesita IA).
+4. **Habla en voz alta.** La sección «Hablar» te escucha por el micrófono y te puntúa. Es lo que
+   más acelera el paso de entender a hablar.
+5. **Consulta, no memorices.** Los casos y las conjugaciones están en «Gramática» y «Verbos» para
+   mirarlos mil veces; se acaban aprendiendo solos.
+6. **Habla con el tutor** cuando tengas dudas o quieras practicar frases libres (necesita IA).
 
-### Lo que hay dentro
+> **Ajusta tu nivel** en Ajustes → Tu nivel. No bloquea nada del curso: sirve para que el tutor
+> te hable a tu altura y para que la práctica rápida y la de pronunciación no te suelten
+> vocabulario de C1 en tu tercer día.
+
+### El curso, nivel a nivel
+
+| Nivel | Unidades | Qué aprendes |
+|---|---|---|
+| **A0** Primeros pasos | 1–4 | Alfabeto, primeras palabras, saludos, pronombres (y por qué "ser" no existe), preguntar |
+| **A1** Principiante | 5–12 | Números, género, familia y «tener», presente de los dos grupos, comida y acusativo, la ciudad y el preposicional, tiempo, supervivencia |
+| **A2** Básico | 13–22 | Pasado, futuro, **el aspecto verbal**, genitivo, dativo, instrumental, verbos de movimiento, imperativo, comparativos, reflexivos |
+| **B1** Intermedio | 23–32 | Aspecto en profundidad, prefijos de movimiento, condicional con бы, subordinadas, fechas y horas, régimen verbal, trabajo, salud, viajes, trámites |
+| **B2** Intermedio alto | 33–40 | Participios activos y pasivos, gerundios, pasiva e impersonales, partículas modales, discusión, formación de palabras, registros |
+| **C1** Avanzado | 41–46 | Matices del aspecto, colocaciones, fraseología y refranes, prensa, ciencia y tecnología, lengua literaria |
+
+Y además:
 
 | | |
 |---|---|
-| **12 unidades** | del A0 al A1: saludos, pronombres, preguntas, números, género, familia, verbos en presente, comida y acusativo, la ciudad y el preposicional, tiempo y rutina, frases de supervivencia |
-| **178 palabras** | con pronunciación figurada para españoles y audio |
-| **51 frases** | de uso real, listas para copiar |
+| **752 palabras** | con pronunciación figurada para españoles y audio |
+| **182 frases** | de uso real, listas para copiar |
 | **Alfabeto completo** | las 33 letras con nombre, sonido, ejemplo y mini-juego |
-| **5 tipos de ejercicio** | ruso→español, español→ruso, escucha, escribir en cirílico (con teclado ruso en pantalla) y ordenar frases |
+| **Gramática de consulta** | los 6 casos, 8 tablas de declinación y conjugación, y los errores típicos de un hispanohablante |
+| **Conjugador** | 51 verbos esenciales conjugados enteros (presente, pasado, futuro, imperativo) |
+| **7 tipos de ejercicio** | ruso→español, español→ruso, escucha, escribir en cirílico (con teclado ЙЦУКЕН), ordenar frases, conjugar verbos y **traducción libre** |
+| **Práctica de pronunciación** | el dispositivo te escucha y te puntúa de 0 a 100 |
 
 ---
 
@@ -146,7 +169,15 @@ server.py / server.js   servidor + puente hacia la IA (elige el que quieras)
 css/styles.css          todos los estilos
 data/
   alphabet.js           las 33 letras
-  lessons.js            las 12 unidades: gramática, vocabulario y frases
+  lessons.js            índice del curso (une los niveles y calcula los índices)
+  gramatica.js          los 6 casos y las tablas de declinación
+  verbos.js             51 verbos conjugados
+  curso/
+    a0-a1.js            unidades 1–12
+    a2.js               unidades 13–22
+    b1.js               unidades 23–32
+    b2.js               unidades 33–40
+    c1.js               unidades 41–46
 js/
   app.js                arranque y navegación
   store.js              guardado del progreso (localStorage)
@@ -154,7 +185,8 @@ js/
   exercises.js          generador de ejercicios
   player.js             el reproductor de ejercicios
   ai.js                 cliente de modelos locales
-  tts.js                pronunciación
+  tts.js                pronunciación (el dispositivo habla)
+  speech.js             reconocimiento de voz (el dispositivo te escucha)
   ui.js                 utilidades (incluye el teclado cirílico)
   views/                una pantalla por archivo
 ```
@@ -164,7 +196,8 @@ para que puedas abrir cualquier archivo y entender qué hace.
 
 ### Añadir tu propio vocabulario
 
-Edita `data/lessons.js` y añade palabras al array `vocab` de una unidad:
+Edita el archivo del nivel que quieras dentro de `data/curso/` y añade palabras al array
+`vocab` de una unidad:
 
 ```js
 { ru: 'солнце', tr: 'sóntse', es: 'sol', cat: 'sustantivo' },
@@ -184,6 +217,7 @@ bloque de una existente y cámbiale el `id`.
 | No suena el audio | Instala la voz rusa (sección 4). En iPhone, el primer sonido requiere que toques la pantalla antes |
 | Desde el móvil no carga | Los dos aparatos deben estar en la misma wifi; usa la IP que muestra el servidor, no `localhost`. Puede que el cortafuegos del PC pida permiso |
 | Los ejercicios de IA fallan o salen raros | Los modelos pequeños se atragantan con el JSON. Prueba uno de 7B o más, o usa la práctica normal |
+| El micrófono no me escucha | El reconocimiento de voz solo va en Chrome, Edge y Safari, necesita permiso de micrófono y, en algunos navegadores, conexión a internet. Si no está disponible la app te deja autoevaluarte |
 | Perdí el progreso | Se guarda en el navegador: borrar datos del navegador lo elimina. Haz copias en Ajustes → Exportar |
 
 ---
@@ -192,7 +226,11 @@ bloque de una existente y cámbiale el `id`.
 
 Los modelos pequeños (3B–8B) saben bastante español, pero **cometen errores en ruso**:
 acentos mal puestos, alguna declinación inventada. Están muy bien para practicar y resolver
-dudas, pero **el contenido fiable es el del curso** (`data/lessons.js`), revisado a mano.
+dudas, pero **el contenido fiable es el del curso** (`data/curso/`), escrito y revisado a mano.
 Si el tutor y la lección se contradicen, hazle caso a la lección.
+
+Lo mismo vale para la corrección de traducciones libres: la IA acepta versiones alternativas
+válidas, que es justo lo que quieres para aprender a construir frases, pero de vez en cuando
+se equivocará en un matiz. La frase del curso siempre se te muestra al lado.
 
 Удачи! (udáchi — ¡suerte!) 🇷🇺

@@ -197,20 +197,35 @@ export function extraerJSON(texto) {
 // Instrucciones (prompts) para cada función pedagógica
 // ---------------------------------------------------------------------------
 
-export const SISTEMA_TUTOR = `Eres un profesor de ruso paciente y cercano. Tu alumno es hispanohablante y está EMPEZANDO desde cero (nivel A0-A1).
+const PERFILES_NIVEL = {
+  A0: 'Está empezando desde cero: no conoce bien el alfabeto. Usa solo palabras de las primeras lecciones y transcribe SIEMPRE el ruso.',
+  A1: 'Sabe leer cirílico despacio y conoce el presente y unas 300 palabras. Frases muy cortas, sin casos complicados.',
+  A2: 'Maneja pasado, futuro y los casos básicos. Puedes usar frases de dos oraciones y vocabulario cotidiano.',
+  B1: 'Se defiende en conversación. Puedes usar subordinadas, aspecto verbal y verbos de movimiento con prefijos.',
+  B2: 'Nivel alto: puedes usar participios, gerundios, pasiva y partículas modales, y explicar matices de registro.',
+  C1: 'Nivel avanzado: trátale casi como a un nativo. Explica matices finos, fraseología, estilo y connotaciones.',
+};
+
+/** El tutor se adapta al nivel que el alumno tenga declarado en Ajustes. */
+export function sistemaTutor() {
+  const nivel = obtener().ajustes.nivel || 'A1';
+  return `Eres un profesor de ruso paciente y cercano. Tu alumno es hispanohablante y tiene nivel ${nivel}.
+
+Perfil del alumno: ${PERFILES_NIVEL[nivel] || PERFILES_NIVEL.A1}
 
 Reglas:
 - Responde SIEMPRE en español, salvo los ejemplos en ruso.
 - Cada vez que escribas ruso, añade entre paréntesis la pronunciación aproximada para un español y la traducción. Ejemplo: спасибо (spasíba — gracias).
 - Marca el acento tónico en la pronunciación.
-- Usa frases cortas y vocabulario muy básico. Nada de lingüística avanzada salvo que te la pidan.
+- Ajusta la dificultad al nivel ${nivel}: ni palabras que no pueda entender ni explicaciones por debajo de su nivel.
 - Máximo 120 palabras por respuesta, salvo que pidan una explicación larga.
 - Si el alumno escribe algo en ruso con errores, corrígelo con cariño: primero di qué estuvo bien, luego la versión correcta y el porqué en una línea.
 - No inventes palabras rusas. Si no estás seguro de algo, dilo.`;
+}
 
 export function promptCorreccion(fraseEs, respuestaAlumno, referenciaRu) {
   return [
-    { role: 'system', content: SISTEMA_TUTOR },
+    { role: 'system', content: sistemaTutor() },
     {
       role: 'user',
       content: `Corrige esta traducción al ruso de un principiante.
@@ -228,7 +243,7 @@ Devuelve SOLO un JSON con esta forma:
 export function promptEjercicios(unidad, cantidad = 5) {
   const vocab = unidad.vocab.map((v) => `${v.ru} = ${v.es}`).join('; ');
   return [
-    { role: 'system', content: SISTEMA_TUTOR },
+    { role: 'system', content: sistemaTutor() },
     {
       role: 'user',
       content: `Crea ${cantidad} ejercicios de opción múltiple para practicar la unidad "${unidad.titulo}" (nivel ${unidad.nivel}).
@@ -245,14 +260,14 @@ La pregunta puede ser de traducción, de completar una frase o de elegir la form
 
 export function promptExplicacion(tema) {
   return [
-    { role: 'system', content: SISTEMA_TUTOR },
+    { role: 'system', content: sistemaTutor() },
     { role: 'user', content: `Explícame de forma muy sencilla, con 3 ejemplos: ${tema}` },
   ];
 }
 
 export function promptDialogo(situacion, nivel = 'A1') {
   return [
-    { role: 'system', content: SISTEMA_TUTOR },
+    { role: 'system', content: sistemaTutor() },
     {
       role: 'user',
       content: `Escribe un diálogo muy corto (6 líneas máximo) de nivel ${nivel} en la situación: "${situacion}".

@@ -118,3 +118,15 @@ export function textoRico(texto = '') {
     .replace(/`(.+?)`/g, '<code>$1</code>')
     .replace(/\n/g, '<br>');
 }
+
+/** Barra de pestañas para las pantallas de consulta. */
+export function subnav(activo) {
+  const enlaces = [
+    { id: 'alfabeto', texto: '🔤 Alfabeto', href: '#/alfabeto' },
+    { id: 'gramatica', texto: '📖 Gramática', href: '#/gramatica' },
+    { id: 'verbos', texto: '🔀 Verbos', href: '#/verbos' },
+  ];
+  return el('nav', { class: 'subnav' }, enlaces.map((e) =>
+    el('a', { class: `subnav__item ${e.id === activo ? 'subnav__item--activo' : ''}`, href: e.href, text: e.texto })
+  ));
+}

@@ -5,6 +5,8 @@ import { el, mezclar, igualRuso, tecladoCirilico, aviso, vibrar, textoRico } fro
 import { hablar, hayVozRusa } from './tts.js';
 import { registrarRespuesta, CALIDAD } from './srs.js';
 import { registrarActividad, obtener } from './store.js';
+import { hayReconocimiento, escuchar, puntuar } from './speech.js';
+import * as IA from './ai.js';
 
 export function reproductor(contenedor, ejercicios, { alTerminar } = {}) {
   if (!ejercicios.length) {
@@ -125,6 +127,8 @@ export function reproductor(contenedor, ejercicios, { alTerminar } = {}) {
   function render(ej) {
     if (ej.tipo === 'escribir') return renderEscribir(ej);
     if (ej.tipo === 'ordenar') return renderOrdenar(ej);
+    if (ej.tipo === 'hablar') return renderHablar(ej);
+    if (ej.tipo === 'traducir') return renderTraducir(ej);
     return renderOpciones(ej);
   }
 
@@ -219,6 +223,109 @@ export function reproductor(contenedor, ejercicios, { alTerminar } = {}) {
         retro(ej, correcto, `Respuesta: **${ej.respuesta}**`);
       },
     }));
+  }
+
+  // --- Pronunciación: te escucha y te puntúa -------------------------------
+  function renderHablar(ej) {
+    zona.appendChild(el('p', { class: 'enunciado', text: ej.enunciado }));
+    zona.appendChild(el('div', { class: 'muestra' }, [
+      el('span', { class: 'muestra__texto muestra__texto--frase', text: ej.muestra }),
+      botonAudio(ej.audio),
+    ]));
+    if (ej.frase) {
+      zona.appendChild(el('p', { class: 'muestra__ayuda', text: ej.frase.tr }));
+      zona.appendChild(el('p', { class: 'muestra__ayuda muestra__ayuda--es', text: ej.frase.es }));
+    }
+
+    if (!hayReconocimiento()) {
+      // Sin reconocimiento de voz: escuchas el modelo y te autoevalúas.
+      zona.appendChild(el('p', { class: 'pista', text: 'Este navegador no puede escucharte. Escucha el audio, repítelo en voz alta y valora tú mismo qué tal ha ido (en Chrome, Edge o Safari sí funciona el micrófono).' }));
+      pie.appendChild(el('div', { class: 'fila-botones fila-botones--ancha' }, [
+        el('button', { class: 'boton boton--principal', text: 'Lo he dicho bien', onclick: () => { calificar(ej, true); retro(ej, true, ej.respuesta); } }),
+        el('button', { class: 'boton', text: 'Me ha costado', onclick: () => { calificar(ej, false); retro(ej, false, ej.respuesta); } }),
+      ]));
+      return;
+    }
+
+    const estadoMicro = el('div', { class: 'micro__estado', text: 'Pulsa el micrófono y lee la frase' });
+    const botonMicro = el('button', { class: 'micro', text: '🎤', title: 'Hablar' });
+    zona.appendChild(el('div', { class: 'micro__caja' }, [botonMicro, estadoMicro]));
+
+    botonMicro.addEventListener('click', async () => {
+      if (botonMicro.classList.contains('micro--escuchando')) return;
+      botonMicro.classList.add('micro--escuchando');
+      estadoMicro.textContent = 'Escuchando… habla ahora';
+      try {
+        const { texto, alternativas } = await escuchar();
+        // Nos quedamos con la alternativa que más se parezca a la frase objetivo.
+        const nota = Math.max(...alternativas.map((a) => puntuar(a, ej.respuesta)));
+        const correcto = nota >= 70;
+        estadoMicro.textContent = `He oído: «${texto}»`;
+        calificar(ej, correcto);
+        retro(ej, correcto, `${correcto ? 'Puntuación' : 'Te ha faltado'}: ${nota}/100 · Frase: **${ej.respuesta}**`);
+      } catch (e) {
+        estadoMicro.textContent = e.message;
+        botonMicro.classList.remove('micro--escuchando');
+      }
+    });
+
+    pie.appendChild(el('button', {
+      class: 'boton boton--sutil', text: 'Saltar esta',
+      onclick: () => { calificar(ej, false); retro(ej, false, ej.respuesta); },
+    }));
+  }
+
+  // --- Traducción libre: la corrige la IA si está activada -----------------
+  function renderTraducir(ej) {
+    zona.appendChild(el('p', { class: 'enunciado', text: ej.enunciado }));
+    zona.appendChild(el('div', { class: 'muestra' }, [
+      el('span', { class: 'muestra__texto muestra__texto--frase', text: ej.muestra }),
+    ]));
+    const entrada = el('input', {
+      class: 'entrada', type: 'text', autocomplete: 'off', autocorrect: 'off',
+      spellcheck: 'false', placeholder: 'escribe la frase en ruso…', lang: 'ru',
+    });
+    zona.appendChild(entrada);
+    zona.appendChild(tecladoCirilico(entrada));
+
+    const comprobar = async () => {
+      const respuesta = entrada.value.trim();
+      if (!respuesta) return;
+      entrada.disabled = true;
+      boton.disabled = true;
+
+      // 1) Comparación literal (rápida y sin IA).
+      if (igualRuso(respuesta, ej.respuesta)) {
+        entrada.classList.add('entrada--bien');
+        calificar(ej, true);
+        return retro(ej, true, `**${ej.respuesta}**`);
+      }
+
+      // 2) Si hay IA local, que juzgue si tu versión también vale.
+      if (IA.configurada()) {
+        boton.textContent = 'Corrigiendo…';
+        try {
+          const juicio = await IA.chatJSON(IA.promptCorreccion(ej.muestra, respuesta, ej.respuesta));
+          const correcto = Boolean(juicio.correcto);
+          entrada.classList.add(correcto ? 'entrada--bien' : 'entrada--mal');
+          calificar(ej, correcto);
+          return retro(ej, correcto,
+            `${juicio.explicacion || ''}\n\nVersión del curso: **${ej.respuesta}**` +
+            (juicio.correccion && !correcto ? `\nCorrección: ${juicio.correccion}` : ''));
+        } catch (e) {
+          // Si la IA falla, seguimos con la corrección literal.
+        }
+      }
+
+      entrada.classList.add('entrada--mal');
+      calificar(ej, false);
+      retro(ej, false, `Respuesta: **${ej.respuesta}**` + (IA.configurada() ? '' : '\n\nCon una IA local activada, aquí te diría si tu versión también es válida.'));
+    };
+
+    entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') comprobar(); });
+    const boton = el('button', { class: 'boton boton--principal boton--ancho', text: 'Comprobar', onclick: comprobar });
+    pie.appendChild(boton);
+    setTimeout(() => entrada.focus(), 50);
   }
 
   siguiente();

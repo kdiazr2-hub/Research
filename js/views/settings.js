@@ -1,6 +1,8 @@
 import { el, aviso } from '../ui.js';
 import { obtener, actualizar, exportarJSON, importarJSON, reiniciarTodo } from '../store.js';
 import { hayVozRusa, vozRusa, hablar } from '../tts.js';
+import { hayReconocimiento } from '../speech.js';
+import { NIVELES } from '../../data/lessons.js';
 import * as IA from '../ai.js';
 
 export function vistaAjustes(raiz) {
@@ -127,6 +129,22 @@ export function vistaAjustes(raiz) {
     ]),
   ]));
 
+  // ---------------- Nivel ----------------
+  const selectorNivel = el('select', { class: 'entrada' },
+    NIVELES.map((n) => el('option', { value: n.id, selected: n.id === estado.ajustes.nivel }, [`${n.id} · ${n.nombre}`])));
+  const descripcionNivel = el('p', { class: 'pista', text: NIVELES.find((n) => n.id === estado.ajustes.nivel)?.meta || '' });
+  selectorNivel.addEventListener('change', () => {
+    actualizar((e) => { e.ajustes.nivel = selectorNivel.value; });
+    descripcionNivel.textContent = NIVELES.find((n) => n.id === selectorNivel.value)?.meta || '';
+    aviso('Nivel actualizado: el tutor te hablará acorde a él.', 'ok');
+  });
+
+  raiz.appendChild(seccion('🎯 Tu nivel', [
+    el('p', { class: 'pista', text: 'Esto no bloquea nada del curso: solo le dice al tutor de IA con qué dificultad hablarte y filtra las frases de la práctica de pronunciación.' }),
+    etiquetado('Nivel actual', selectorNivel),
+    descripcionNivel,
+  ]));
+
   // ---------------- Estudio ----------------
   raiz.appendChild(seccion('📚 Estudio', [
     interruptor('Mostrar pronunciación aproximada', estado.ajustes.transliteracion, (v) => {
@@ -146,6 +164,10 @@ export function vistaAjustes(raiz) {
     el('p', { class: hayVozRusa() ? 'estado-conexion estado-conexion--ok' : 'estado-conexion estado-conexion--error',
       text: hayVozRusa() ? `✓ Voz detectada: ${voz.name}` : '✗ Este dispositivo no tiene voz rusa instalada' }),
     el('button', { class: 'boton', text: 'Probar: «Здравствуйте»', onclick: () => hablar('Здравствуйте') }),
+    el('p', { class: hayReconocimiento() ? 'estado-conexion estado-conexion--ok' : 'estado-conexion estado-conexion--error',
+      text: hayReconocimiento()
+        ? '✓ Este navegador puede escucharte: la práctica de pronunciación está disponible'
+        : '✗ Este navegador no reconoce voz (usa Chrome, Edge o Safari para practicar pronunciación)' }),
     el('details', { class: 'nota' }, [
       el('summary', { text: 'Cómo instalar la voz rusa' }),
       el('div', { class: 'guia', html: `

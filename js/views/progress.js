@@ -1,6 +1,6 @@
 import { el } from '../ui.js';
 import { obtener, hoyISO } from '../store.js';
-import { TODO_VOCAB, UNIDADES } from '../../data/lessons.js';
+import { TODO_VOCAB, unidadesPorNivel, numeroDeUnidad } from '../../data/lessons.js';
 import { resumen } from '../srs.js';
 import { hablar } from '../tts.js';
 
@@ -79,21 +79,37 @@ export function vistaProgreso(raiz) {
     raiz.appendChild(lista);
   }
 
-  // Progreso por unidad
-  raiz.appendChild(el('h2', { class: 'seccion-titulo', text: 'Por unidad' }));
-  const tabla = el('div', { class: 'tabla-unidades' });
-  for (const u of UNIDADES) {
-    const idsU = u.vocab.map((v) => `${u.id}:${v.ru}`);
-    const ru = resumen(idsU);
-    const pct = ru.total ? Math.round((ru.vistas / ru.total) * 100) : 0;
-    tabla.appendChild(el('a', { class: 'tabla-unidades__fila', href: `#/unidad/${u.id}` }, [
-      el('span', { class: 'tabla-unidades__emoji', text: u.emoji }),
-      el('span', { class: 'tabla-unidades__titulo', text: u.titulo }),
-      el('span', { class: 'barra barra--fina' }, [el('span', { class: 'barra__relleno', style: `width:${pct}%` })]),
-      el('span', { class: 'tabla-unidades__pct', text: `${pct}%` }),
+  // Progreso por nivel y por unidad
+  raiz.appendChild(el('h2', { class: 'seccion-titulo', text: 'Por nivel' }));
+  for (const nivel of unidadesPorNivel()) {
+    const idsNivel = nivel.unidades.flatMap((u) => u.vocab.map((v) => `${u.id}:${v.ru}`));
+    const rn = resumen(idsNivel);
+    const pctNivel = rn.total ? Math.round((rn.vistas / rn.total) * 100) : 0;
+
+    const tabla = el('div', { class: 'tabla-unidades' });
+    for (const u of nivel.unidades) {
+      const ru = resumen(u.vocab.map((v) => `${u.id}:${v.ru}`));
+      const pct = ru.total ? Math.round((ru.vistas / ru.total) * 100) : 0;
+      tabla.appendChild(el('a', { class: 'tabla-unidades__fila', href: `#/unidad/${u.id}` }, [
+        el('span', { class: 'tabla-unidades__emoji', text: u.emoji }),
+        el('span', { class: 'tabla-unidades__titulo', text: `${numeroDeUnidad(u.id)}. ${u.titulo}` }),
+        el('span', { class: 'barra barra--fina' }, [el('span', { class: 'barra__relleno', style: `width:${pct}%` })]),
+        el('span', { class: 'tabla-unidades__pct', text: `${pct}%` }),
+      ]));
+    }
+
+    raiz.appendChild(el('details', { class: 'nivel', open: pctNivel > 0 && pctNivel < 100 ? true : null }, [
+      el('summary', { class: 'nivel__cabecera' }, [
+        el('span', { class: 'nivel__emoji', text: nivel.emoji }),
+        el('span', { class: 'nivel__texto' }, [
+          el('span', { class: 'nivel__nombre', text: `${nivel.id} · ${nivel.nombre}` }),
+          el('span', { class: 'nivel__lema', text: `${rn.vistas} de ${rn.total} palabras · ${rn.dominadas} dominadas` }),
+        ]),
+        el('span', { class: 'nivel__pct', text: `${pctNivel}%` }),
+      ]),
+      el('div', { class: 'nivel__cuerpo' }, [tabla]),
     ]));
   }
-  raiz.appendChild(tabla);
 }
 
 function cifra(emoji, valor, etiqueta) {

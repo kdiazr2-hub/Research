@@ -11,6 +11,8 @@ import { DIALOGOS, LINEAS_DIALOGO } from './data/dialogos.js';
 import { VERBOS } from './data/verbos.js';
 import { TABLAS, CASOS } from './data/gramatica.js';
 import { ALFABETO } from './data/alphabet.js';
+import { VERSION } from './js/version.js';
+import { readFileSync } from 'node:fs';
 
 const problemas = [];
 const aviso = (donde, que) => problemas.push(`${donde}: ${que}`);
@@ -95,6 +97,12 @@ for (const t of TABLAS) {
 if (CASOS.length !== 6) aviso('gramática', 'deberían ser 6 casos');
 if (ALFABETO.length !== 33) aviso('alfabeto', `hay ${ALFABETO.length} letras y deberían ser 33`);
 
+// --- Versión: js/version.js y sw.js deben ir a la par ----------------------
+const versionSW = readFileSync('./sw.js', 'utf8').match(/const VERSION = '([^']+)'/)?.[1];
+if (versionSW !== VERSION) {
+  aviso('versión', `js/version.js dice ${VERSION} y sw.js dice ${versionSW}: al no coincidir, la app no se actualizaría en los navegadores`);
+}
+
 // --- Resultado -------------------------------------------------------------
 if (problemas.length) {
   console.error(`\n✗ ${problemas.length} problema(s):\n`);
@@ -107,4 +115,5 @@ console.log(`
   ${UNIDADES.length} unidades · ${TODO_VOCAB.length} palabras · ${TODAS_FRASES.length} frases
   ${DIALOGOS.length} diálogos (${LINEAS_DIALOGO.length} líneas) · ${VERBOS.length} verbos
   ${TABLAS.length} tablas · ${ALFABETO.length} letras
+  versión ${VERSION}
 `);

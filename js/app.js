@@ -15,6 +15,7 @@ import { vistaProgreso } from './views/progress.js';
 import { obtener } from './store.js';
 import { TODO_VOCAB } from '../data/lessons.js';
 import { pendientesHoy } from './srs.js';
+import { aviso } from './ui.js';
 
 const contenido = document.getElementById('contenido');
 const navegacion = document.getElementById('navegacion');
@@ -115,10 +116,37 @@ function bienvenida() {
   document.body.appendChild(caja);
 }
 
-// Service worker: permite usar la app sin conexión.
+// Service worker: permite usar la app sin conexión y la mantiene al día.
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => { /* sin conexión offline, no pasa nada */ });
+  const habiaVersionPrevia = Boolean(navigator.serviceWorker.controller);
+  let recargando = false;
+
+  // Cuando entra en juego un service worker nuevo, recargamos UNA vez para que
+  // el código y los datos que ves sean de la misma versión. Sin esto había que
+  // recargar dos veces a mano tras cada actualización.
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!habiaVersionPrevia || recargando) return;
+    recargando = true;
+    location.reload();
+  });
+
+  navigator.serviceWorker.addEventListener('message', (ev) => {
+    if (ev.data?.tipo === 'version-nueva' && habiaVersionPrevia) {
+      aviso(`Actualizada a la versión ${ev.data.version}`, 'ok');
+    }
+  });
+
+  window.addEventListener('load', async () => {
+    try {
+      const registro = await navigator.serviceWorker.register('./sw.js');
+      // Comprobamos si hay versión nueva cada vez que vuelves a la app.
+      registro.update().catch(() => {});
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) registro.update().catch(() => {});
+      });
+    } catch (e) {
+      // Sin modo offline; la app funciona igual mientras haya servidor.
+    }
   });
 }
 

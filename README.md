@@ -48,6 +48,10 @@ Abre `http://localhost:8000` en el navegador y ya estás dentro.
 
 Una vez instalada funciona aunque apagues el servidor o te quedes sin cobertura.
 
+**Actualizarla:** haz `git pull` y abre la app; con el servidor en marcha se actualiza sola al
+entrar. Puedes confirmar qué versión tienes en Ajustes → Versión y contenido, donde también
+está el botón de forzar la actualización si algo se queda pegado.
+
 ---
 
 ## 2. Cómo se usa (el plan de estudio)
@@ -238,6 +242,7 @@ ningún carácter de otro alfabeto al copiar y pegar (pasa más de lo que parece
 | El micrófono no me escucha | El reconocimiento de voz solo va en Chrome, Edge y Safari, necesita permiso de micrófono y, en algunos navegadores, conexión a internet. Si no está disponible la app te deja autoevaluarte |
 | En la conversación el modelo me contesta en español | Los modelos pequeños se saltan la instrucción de "solo ruso". Prueba con uno de 7B o más; con 3B pasa a menudo |
 | Perdí el progreso | Se guarda en el navegador: borrar datos del navegador lo elimina. Haz copias en Ajustes → Exportar |
+| Actualicé el código pero sigo viendo la versión antigua | Mira **Ajustes → Versión y contenido**: ahí ves qué versión tienes cargada. Si no coincide, pulsa **Forzar actualización** (borra la copia local del programa, no tu progreso). En el iPhone, cierra antes la app del todo deslizándola fuera del multitarea |
 
 ---
 

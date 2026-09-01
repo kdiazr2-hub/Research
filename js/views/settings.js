@@ -2,7 +2,9 @@ import { el, aviso } from '../ui.js';
 import { obtener, actualizar, exportarJSON, importarJSON, reiniciarTodo } from '../store.js';
 import { hayVozRusa, vozRusa, hablar } from '../tts.js';
 import { hayReconocimiento } from '../speech.js';
-import { NIVELES } from '../../data/lessons.js';
+import { NIVELES, UNIDADES, TODO_VOCAB } from '../../data/lessons.js';
+import { DIALOGOS } from '../../data/dialogos.js';
+import { VERSION } from '../version.js';
 import * as IA from '../ai.js';
 
 export function vistaAjustes(raiz) {
@@ -178,6 +180,16 @@ export function vistaAjustes(raiz) {
     ]),
   ]));
 
+  // ---------------- Versión ----------------
+  raiz.appendChild(seccion('🔄 Versión y contenido', [
+    el('p', { class: 'estado-conexion estado-conexion--ok',
+      text: `Versión ${VERSION} · ${UNIDADES.length} unidades · ${TODO_VOCAB.length} palabras · ${DIALOGOS.length} diálogos` }),
+    el('p', { class: 'pista', text: 'Si estas cifras no coinciden con lo que esperas, tienes una versión antigua guardada en el navegador. El botón de abajo borra la copia local del programa y vuelve a bajarla (tu progreso NO se toca).' }),
+    el('div', { class: 'fila-botones' }, [
+      el('button', { class: 'boton', text: 'Forzar actualización', onclick: forzarActualizacion }),
+    ]),
+  ]));
+
   // ---------------- Datos ----------------
   const entradaArchivo = el('input', { type: 'file', accept: 'application/json', class: 'oculto' });
   entradaArchivo.addEventListener('change', async () => {
@@ -210,6 +222,26 @@ export function vistaAjustes(raiz) {
     ]),
     entradaArchivo,
   ]));
+}
+
+// Borra el service worker y las cachés y recarga: la vía rápida cuando el
+// navegador se ha quedado pegado a una versión antigua. El progreso vive en
+// localStorage, así que no se pierde nada.
+async function forzarActualizacion() {
+  try {
+    if ('serviceWorker' in navigator) {
+      const registros = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registros.map((r) => r.unregister()));
+    }
+    if ('caches' in window) {
+      const claves = await caches.keys();
+      await Promise.all(claves.map((k) => caches.delete(k)));
+    }
+    aviso('Descargando la última versión…', 'ok');
+    setTimeout(() => location.reload(true), 700);
+  } catch (e) {
+    aviso(`No pude limpiar la caché: ${e.message}`, 'error');
+  }
 }
 
 function descargarCopia() {

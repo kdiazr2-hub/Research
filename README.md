@@ -2,9 +2,9 @@
 
 Una aplicación tipo Duolingo/Busuu para **hispanohablantes**, con el curso completo
 **del alfabeto (A0) al nivel avanzado (C1)**: 46 unidades, 752 palabras y 182 frases.
-Incluye **repetición espaciada**, **práctica de pronunciación con tu voz** y un
-**tutor de IA que corre en tu propio dispositivo** (Ollama en el ordenador,
-apps tipo LM Pocket en el iPhone).
+Incluye **repetición espaciada**, **16 diálogos que puedes actuar en voz alta**,
+**práctica de pronunciación con tu voz** y **conversación libre con una IA que corre en
+tu propio dispositivo** (Ollama en el ordenador, apps tipo LM Pocket en el iPhone).
 
 - Funciona **sin internet** y **sin cuenta**: tu progreso se guarda solo en tu navegador.
 - Se instala como app en el iPhone y en el PC (es una PWA).
@@ -59,8 +59,13 @@ Una vez instalada funciona aunque apagues el servidor o te quedes sin cobertura.
 3. **Haz el repaso diario.** Es lo más importante: 5 minutos al día valen más que 2 horas
    el domingo. La app calcula qué palabras estás a punto de olvidar y te las pregunta justo
    ese día (algoritmo de repetición espaciada, el mismo principio que Anki).
-4. **Habla en voz alta.** La sección «Hablar» te escucha por el micrófono y te puntúa. Es lo que
-   más acelera el paso de entender a hablar.
+4. **Habla en voz alta.** Todo lo que te hace producir está en la pestaña **Hablar**:
+   - **Diálogos:** escucha la conversación entera, luego elige un papel y dilo tú. La app lee
+     las líneas del otro personaje y te puntúa las tuyas.
+   - **Conversación con IA:** eliges una situación y el modelo local conversa contigo solo en
+     ruso, por texto o por micrófono. Al terminar te corrige en español todo lo que dijiste.
+   - **Pronunciación:** frases sueltas de tu nivel para leer en voz alta.
+   Es lo que más acelera el paso de entender a hablar, y casi nadie lo entrena.
 5. **Consulta, no memorices.** Los casos y las conjugaciones están en «Gramática» y «Verbos» para
    mirarlos mil veces; se acaban aprendiendo solos.
 6. **Habla con el tutor** cuando tengas dudas o quieras practicar frases libres (necesita IA).
@@ -85,6 +90,8 @@ Y además:
 | | |
 |---|---|
 | **752 palabras** | con pronunciación figurada para españoles y audio |
+| **16 diálogos** | conversaciones enteras de A0 a C1: escúchalas seguidas y luego actúa uno de los dos papeles hablando tú |
+| **10 situaciones de role-play** | la IA local hace de camarero, taxista, médico o entrevistador, habla solo en ruso y al terminar te corrige |
 | **182 frases** | de uso real, listas para copiar |
 | **Alfabeto completo** | las 33 letras con nombre, sonido, ejemplo y mini-juego |
 | **Gramática de consulta** | los 6 casos, 8 tablas de declinación y conjugación, y los errores típicos de un hispanohablante |
@@ -172,6 +179,7 @@ data/
   lessons.js            índice del curso (une los niveles y calcula los índices)
   gramatica.js          los 6 casos y las tablas de declinación
   verbos.js             51 verbos conjugados
+  dialogos.js           16 diálogos graduados
   curso/
     a0-a1.js            unidades 1–12
     a2.js               unidades 13–22
@@ -189,6 +197,7 @@ js/
   speech.js             reconocimiento de voz (el dispositivo te escucha)
   ui.js                 utilidades (incluye el teclado cirílico)
   views/                una pantalla por archivo
+verificar.mjs           comprueba que el contenido esté completo y bien escrito
 ```
 
 No hay dependencias, ni `npm install`, ni compilación. Es JavaScript de navegador tal cual,
@@ -204,7 +213,16 @@ Edita el archivo del nivel que quieras dentro de `data/curso/` y añade palabras
 ```
 
 Los ejercicios y el repaso se generan solos a partir de ahí. Para una unidad nueva, copia el
-bloque de una existente y cámbiale el `id`.
+bloque de una existente y cámbiale el `id`. Los diálogos se añaden igual en `data/dialogos.js`.
+
+Después de tocar cualquier archivo de `data/`, pasa el verificador:
+
+```bash
+node verificar.mjs
+```
+
+Comprueba que no falte ningún campo, que los ids no se repitan y que no se haya colado
+ningún carácter de otro alfabeto al copiar y pegar (pasa más de lo que parece).
 
 ---
 
@@ -218,6 +236,7 @@ bloque de una existente y cámbiale el `id`.
 | Desde el móvil no carga | Los dos aparatos deben estar en la misma wifi; usa la IP que muestra el servidor, no `localhost`. Puede que el cortafuegos del PC pida permiso |
 | Los ejercicios de IA fallan o salen raros | Los modelos pequeños se atragantan con el JSON. Prueba uno de 7B o más, o usa la práctica normal |
 | El micrófono no me escucha | El reconocimiento de voz solo va en Chrome, Edge y Safari, necesita permiso de micrófono y, en algunos navegadores, conexión a internet. Si no está disponible la app te deja autoevaluarte |
+| En la conversación el modelo me contesta en español | Los modelos pequeños se saltan la instrucción de "solo ruso". Prueba con uno de 7B o más; con 3B pasa a menudo |
 | Perdí el progreso | Se guarda en el navegador: borrar datos del navegador lo elimina. Haz copias en Ajustes → Exportar |
 
 ---

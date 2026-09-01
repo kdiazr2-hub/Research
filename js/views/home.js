@@ -45,8 +45,8 @@ export function vistaInicio(raiz) {
     acceso('🔤', 'Alfabeto', 'Las 33 letras', '#/alfabeto'),
     acceso('📖', 'Gramática', 'Casos y tablas', '#/gramatica'),
     acceso('🔀', 'Verbos', 'Conjugador', '#/verbos'),
+    acceso('🎭', 'Diálogos', 'Conversaciones', '#/dialogos'),
     acceso('⚡', 'Práctica', '10 preguntas', '#/rapida'),
-    acceso('🗣️', 'Hablar', 'Con tu voz', '#/hablar'),
     acceso('📈', 'Progreso', 'Tus cifras', '#/progreso'),
   ]));
 

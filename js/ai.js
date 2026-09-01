@@ -280,3 +280,65 @@ Al final añade 3 palabras clave para memorizar.`,
 export function guardarConfig(parcial) {
   actualizar((e) => Object.assign(e.ajustes.ia, parcial));
 }
+
+// ---------------------------------------------------------------------------
+// Conversación por roles (role-play)
+// ---------------------------------------------------------------------------
+
+export const SITUACIONES = [
+  { id: 'cafe', emoji: '☕', titulo: 'En una cafetería', papel: 'un camarero de una cafetería de Moscú', nivel: 'A1' },
+  { id: 'taxi', emoji: '🚕', titulo: 'En un taxi', papel: 'un taxista que te lleva al centro', nivel: 'A2' },
+  { id: 'tienda', emoji: '🛒', titulo: 'En una tienda', papel: 'un dependiente de una tienda de alimentación', nivel: 'A1' },
+  { id: 'calle', emoji: '🧭', titulo: 'Preguntar el camino', papel: 'un transeúnte al que paras por la calle para pedir indicaciones', nivel: 'A1' },
+  { id: 'hotel', emoji: '🏨', titulo: 'En el hotel', papel: 'el recepcionista de un hotel donde acabas de llegar', nivel: 'A2' },
+  { id: 'amigo', emoji: '🍻', titulo: 'Quedar con un amigo', papel: 'un amigo ruso con el que estás quedando para esta tarde', nivel: 'A2' },
+  { id: 'medico', emoji: '🩺', titulo: 'En el médico', papel: 'un médico de cabecera que te atiende en la consulta', nivel: 'B1' },
+  { id: 'trabajo', emoji: '💼', titulo: 'Entrevista de trabajo', papel: 'un entrevistador de recursos humanos en una empresa rusa', nivel: 'B1' },
+  { id: 'vecino', emoji: '🏠', titulo: 'Charla con un vecino', papel: 'tu vecina rusa, que es habladora y te pregunta por tu vida', nivel: 'B1' },
+  { id: 'debate', emoji: '📰', titulo: 'Debatir una noticia', papel: 'un amigo con opiniones fuertes que quiere debatir contigo un tema de actualidad', nivel: 'B2' },
+];
+
+export function promptRolePlay(situacion) {
+  const nivel = obtener().ajustes.nivel || 'A1';
+  return {
+    role: 'system',
+    content: `Eres ${situacion.papel}. Estás hablando con un hispanohablante que aprende ruso y tiene nivel ${nivel}.
+
+Reglas ESTRICTAS:
+- Habla SOLO en ruso. Nunca en español, ni siquiera para explicar.
+- Frases cortas y vocabulario del nivel ${nivel}. Si el nivel es A1 o A2, usa oraciones de 3 a 8 palabras.
+- Una sola intervención por turno: di tu frase y espera. Nunca escribas las respuestas del alumno.
+- Mantén viva la conversación: termina casi siempre con una pregunta sencilla.
+- Si el alumno comete un error pero se le entiende, sigue la conversación con naturalidad sin corregirle (la corrección llega al final).
+- Si dice algo incomprensible, responde en ruso pidiéndole que lo repita (Простите, не понял. Повторите, пожалуйста).
+- No uses emojis ni acotaciones entre paréntesis. Solo diálogo.
+
+Empieza tú saludando de forma adecuada a la situación.`,
+  };
+}
+
+export function promptTraducirLinea(texto) {
+  return [
+    { role: 'system', content: 'Traduces del ruso al español. Responde solo con la traducción, sin comillas ni comentarios.' },
+    { role: 'user', content: texto },
+  ];
+}
+
+export function promptFeedbackConversacion(intervenciones, situacion) {
+  return [
+    { role: 'system', content: sistemaTutor() },
+    {
+      role: 'user',
+      content: `Acabo de mantener esta conversación en ruso en la situación "${situacion}". Estas son MIS frases:
+
+${intervenciones.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+Dame feedback breve en español:
+1. Una frase valorando cómo lo he hecho en general.
+2. Las correcciones concretas que necesite (máximo 4), en formato "lo que dije → lo correcto → por qué" en una línea cada una.
+3. Una expresión nueva que me habría venido bien en esta situación.
+
+Si algo estaba bien, dilo. No inventes errores que no existan.`,
+    },
+  ];
+}

@@ -5,6 +5,9 @@ import { vistaInicio } from './views/home.js';
 import { vistaAlfabeto } from './views/alphabet.js';
 import { vistaUnidad, vistaPractica, vistaRepaso, vistaRapida, vistaConjugar, vistaHablar } from './views/lesson.js';
 import { vistaGramatica } from './views/grammar.js';
+import { vistaDialogos, vistaDialogo, vistaActuar } from './views/dialogues.js';
+import { vistaConversar } from './views/roleplay.js';
+import { vistaHablarHub } from './views/speaking.js';
 import { vistaVerbos } from './views/verbs.js';
 import { vistaTutor } from './views/tutor.js';
 import { vistaAjustes } from './views/settings.js';
@@ -26,8 +29,13 @@ const RUTAS = [
   { patron: /^\/gramatica$/, vista: (r) => vistaGramatica(r), nav: 'consulta' },
   { patron: /^\/verbos$/, vista: (r) => vistaVerbos(r), nav: 'consulta' },
   { patron: /^\/conjugar$/, vista: (r) => vistaConjugar(r), nav: 'consulta', limpia: true },
-  { patron: /^\/hablar$/, vista: (r) => vistaHablar(r), nav: 'repaso', limpia: true },
-  { patron: /^\/tutor$/, vista: (r) => vistaTutor(r), nav: 'tutor' },
+  { patron: /^\/hablar$/, vista: (r) => vistaHablarHub(r), nav: 'hablar' },
+  { patron: /^\/pronunciacion$/, vista: (r) => vistaHablar(r), nav: 'hablar', limpia: true },
+  { patron: /^\/dialogos$/, vista: (r) => vistaDialogos(r), nav: 'hablar' },
+  { patron: /^\/dialogo\/([\w-]+)$/, vista: (r, m) => vistaDialogo(r, m[1]), nav: 'hablar' },
+  { patron: /^\/actuar\/([\w-]+)$/, vista: (r, m) => vistaActuar(r, m[1]), nav: 'hablar', limpia: true },
+  { patron: /^\/conversar(?:\/([\w-]+))?$/, vista: (r, m) => vistaConversar(r, m[1]), nav: 'hablar' },
+  { patron: /^\/tutor$/, vista: (r) => vistaTutor(r), nav: 'hablar' },
   { patron: /^\/progreso$/, vista: (r) => vistaProgreso(r), nav: 'progreso' },
   { patron: /^\/ajustes$/, vista: (r) => vistaAjustes(r), nav: 'ajustes' },
 ];
@@ -36,7 +44,7 @@ const ENLACES_NAV = [
   { id: 'inicio', emoji: '🏠', texto: 'Inicio', href: '#/inicio' },
   { id: 'consulta', emoji: '📖', texto: 'Consulta', href: '#/gramatica' },
   { id: 'repaso', emoji: '🔁', texto: 'Repaso', href: '#/repaso' },
-  { id: 'tutor', emoji: '💬', texto: 'Tutor', href: '#/tutor' },
+  { id: 'hablar', emoji: '🗣️', texto: 'Hablar', href: '#/hablar' },
   { id: 'ajustes', emoji: '⚙️', texto: 'Ajustes', href: '#/ajustes' },
 ];
 

@@ -2,7 +2,7 @@
 // Estrategia: "network first" para el HTML (así ves los cambios al recargar)
 // y "cache first" para el resto de archivos.
 
-const CACHE = 'ruso-app-v2';
+const CACHE = 'ruso-app-v3';
 const ARCHIVOS = [
   './',
   './index.html',
@@ -24,11 +24,15 @@ const ARCHIVOS = [
   './js/views/progress.js',
   './js/views/grammar.js',
   './js/views/verbs.js',
+  './js/views/dialogues.js',
+  './js/views/roleplay.js',
+  './js/views/speaking.js',
   './js/speech.js',
   './data/alphabet.js',
   './data/lessons.js',
   './data/verbos.js',
   './data/gramatica.js',
+  './data/dialogos.js',
   './data/curso/a0-a1.js',
   './data/curso/a2.js',
   './data/curso/b1.js',

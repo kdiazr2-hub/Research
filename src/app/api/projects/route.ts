@@ -9,6 +9,7 @@ import {
   REPORTING_GUIDELINES,
   REPORTING_GUIDELINE_VERSIONS,
 } from "@/lib/reporting-guidelines";
+import { seedChecklistForProject } from "@/lib/checklist";
 
 const createSchema = z.object({
   name: z.string().min(1).max(200),
@@ -95,6 +96,8 @@ export async function POST(req: Request) {
       },
     },
   });
+
+  await seedChecklistForProject(project.id, reportingGuideline);
 
   await writeAudit({
     userId: session.user.id,

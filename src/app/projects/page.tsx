@@ -35,13 +35,11 @@ export default async function ProjectsPage() {
       <section className="panel">
         <h2>{t.newProject}</h2>
         <CreateProjectForm
+          locale={locale}
           labels={{
             projectName: t.projectName,
             description: t.description,
             reportingGuideline: t.reportingGuideline,
-            care: t.care,
-            prisma: t.prisma,
-            otherGeneric: t.otherGeneric,
             phiType: t.phiType,
             phiNone: t.phiNone,
             phi: t.phi,

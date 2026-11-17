@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import { getGuideline } from "../src/lib/equator";
 
 const prisma = new PrismaClient();
 
@@ -41,6 +42,17 @@ async function main() {
         reportingGuidelineVersion: "2013",
       },
     });
+    const count = await prisma.checklistItem.count({ where: { projectId: existing.id } });
+    if (count === 0) {
+      await prisma.checklistItem.createMany({
+        data: getGuideline("CARE").checklist.map((item) => ({
+          projectId: existing.id,
+          itemKey: item.key,
+          checked: false,
+          notes: "",
+        })),
+      });
+    }
   }
   if (!existing) {
     const project = await prisma.project.create({
@@ -75,6 +87,15 @@ async function main() {
       },
     });
     projectId = project.id;
+
+    await prisma.checklistItem.createMany({
+      data: getGuideline("CARE").checklist.map((item) => ({
+        projectId: project.id,
+        itemKey: item.key,
+        checked: false,
+        notes: "",
+      })),
+    });
 
     await prisma.auditLog.create({
       data: {

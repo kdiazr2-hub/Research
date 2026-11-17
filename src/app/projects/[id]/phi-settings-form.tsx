@@ -2,15 +2,18 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { GuidelineSelect } from "@/components/guideline-select";
 
 export function PhiSettingsForm({
   projectId,
   canChangePhiFlags,
+  locale,
   initial,
   labels,
 }: {
   projectId: string;
   canChangePhiFlags: boolean;
+  locale: string;
   initial: {
     name: string;
     description: string;
@@ -25,9 +28,8 @@ export function PhiSettingsForm({
     projectName: string;
     description: string;
     reportingGuideline: string;
-    care: string;
-    prisma: string;
-    otherGeneric: string;
+    switchGuidelineWarn: string;
+    preserveChecks: string;
     phiType: string;
     phiNone: string;
     phi: string;
@@ -52,11 +54,22 @@ export function PhiSettingsForm({
     setError(null);
     setMessage(null);
     const fd = new FormData(e.currentTarget);
+    const nextGuideline = String(fd.get("reportingGuideline") || "OTHER");
+    const guidelineChanging = nextGuideline !== initial.reportingGuideline;
+
+    if (guidelineChanging) {
+      const ok = window.confirm(labels.switchGuidelineWarn);
+      if (!ok) {
+        setPending(false);
+        return;
+      }
+    }
 
     const payload: Record<string, unknown> = {
       name: String(fd.get("name") || ""),
       description: String(fd.get("description") || ""),
-      reportingGuideline: String(fd.get("reportingGuideline") || "OTHER"),
+      reportingGuideline: nextGuideline,
+      preserveChecklistMatching: fd.get("preserveChecklistMatching") === "on",
     };
 
     if (canChangePhiFlags) {
@@ -92,16 +105,18 @@ export function PhiSettingsForm({
         {labels.description}
         <textarea name="description" defaultValue={initial.description} />
       </label>
-      <label>
-        {labels.reportingGuideline}
-        <select
-          name="reportingGuideline"
-          defaultValue={initial.reportingGuideline}
-        >
-          <option value="CARE">{labels.care}</option>
-          <option value="PRISMA">{labels.prisma}</option>
-          <option value="OTHER">{labels.otherGeneric}</option>
-        </select>
+      <GuidelineSelect
+        label={labels.reportingGuideline}
+        locale={locale}
+        defaultValue={initial.reportingGuideline}
+      />
+      <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <input
+          name="preserveChecklistMatching"
+          type="checkbox"
+          defaultChecked
+        />
+        {labels.preserveChecks}
       </label>
       {canChangePhiFlags ? (
         <>

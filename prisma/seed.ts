@@ -209,6 +209,123 @@ async function main() {
         },
       });
     }
+
+    // M2 fixture: synthetic tabular fields + rows + notebook registration
+    const fieldCount = await prisma.dataField.count({ where: { projectId } });
+    if (fieldCount === 0) {
+      await prisma.dataField.createMany({
+        data: [
+          {
+            projectId,
+            name: "Subject ID",
+            key: "subject_id",
+            fieldType: "string",
+            isPhi: true,
+            deidMode: "hash",
+            position: 0,
+          },
+          {
+            projectId,
+            name: "Age (years)",
+            key: "age_years",
+            fieldType: "number",
+            isPhi: false,
+            deidMode: "strip",
+            position: 1,
+          },
+          {
+            projectId,
+            name: "Modality",
+            key: "modality",
+            fieldType: "string",
+            isPhi: false,
+            deidMode: "strip",
+            position: 2,
+          },
+          {
+            projectId,
+            name: "MRN",
+            key: "mrn",
+            fieldType: "string",
+            isPhi: true,
+            deidMode: "strip",
+            position: 3,
+          },
+        ],
+      });
+      await prisma.dataRow.createMany({
+        data: [
+          {
+            projectId,
+            createdById: owner.id,
+            valuesJson: JSON.stringify({
+              subject_id: "SYN-001",
+              age_years: "54",
+              modality: "CT",
+              mrn: "MRN-DEMO-111",
+            }),
+          },
+          {
+            projectId,
+            createdById: owner.id,
+            valuesJson: JSON.stringify({
+              subject_id: "SYN-002",
+              age_years: "61",
+              modality: "CT",
+              mrn: "MRN-DEMO-222",
+            }),
+          },
+        ],
+      });
+      await prisma.auditLog.create({
+        data: {
+          userId: owner.id,
+          projectId,
+          action: "DATA_FIELD_PHI_MARK",
+          metadata: JSON.stringify({
+            seed: true,
+            keys: ["subject_id", "mrn"],
+          }),
+        },
+      });
+    }
+
+    const nbCount = await prisma.notebook.count({ where: { projectId } });
+    if (nbCount === 0) {
+      const nb = await prisma.notebook.create({
+        data: {
+          projectId,
+          title: "Synthetic CT outcomes (stub)",
+          kind: "ipynb",
+          externalPath: "/workspace/research/analysis/ct_outcomes.ipynb",
+          description:
+            "Stub notebook registration — open externally; use analysis/ de-ID CSV only.",
+          createdById: analyst.id,
+        },
+      });
+      await prisma.analysisArtifact.create({
+        data: {
+          projectId,
+          notebookId: nb.id,
+          title: "Figure 1 — age distribution (synthetic)",
+          kind: "figure",
+          pathOrUrl: "figures/fig1_age_hist.png",
+          provenanceJson: JSON.stringify({
+            notes: "Seed stub — derived from de-ID analysis CSV, not raw PHI",
+            datasetPath: "projects/<id>/analysis/deid-*.csv",
+          }),
+          createdById: analyst.id,
+        },
+      });
+      await prisma.auditLog.create({
+        data: {
+          userId: analyst.id,
+          projectId,
+          action: "NOTEBOOK_REGISTER",
+          metadata: JSON.stringify({ seed: true, notebookId: nb.id }),
+        },
+      });
+    }
   }
 
   console.log("Seed OK");

@@ -7,6 +7,7 @@ import { getLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionaries";
 import { AppShell } from "@/components/app-shell";
 import { ProjectNav } from "@/components/project-nav";
+import { projectNavLabels } from "@/lib/nav-labels";
 import type { Role } from "@/lib/types";
 import { ExportClient } from "./export-client";
 
@@ -65,17 +66,7 @@ quarto render manuscript.qmd --to latex`;
           </p>
         </div>
       </div>
-      <ProjectNav
-        projectId={id}
-        active="export"
-        labels={{
-          overview: t.overview,
-          library: t.library,
-          notes: t.notes,
-          manuscript: t.manuscript,
-          export: t.export,
-        }}
-      />
+      <ProjectNav projectId={id} active="export" labels={projectNavLabels(t)} />
       <ExportClient
         projectId={id}
         labels={{

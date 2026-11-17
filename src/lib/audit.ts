@@ -9,7 +9,21 @@ export type AuditAction =
   | "MEMBER_INVITE"
   | "ROLE_CHANGE"
   | "PHI_FLAG_CHANGE"
-  | "ACCESS_DENIED";
+  | "ACCESS_DENIED"
+  | "DATA_FIELD_CREATE"
+  | "DATA_FIELD_UPDATE"
+  | "DATA_FIELD_PHI_MARK"
+  | "DATA_ROW_CREATE"
+  | "DATA_ROW_UPDATE"
+  | "DATA_ROW_DELETE"
+  | "DATA_CSV_IMPORT"
+  | "DATA_CSV_EXPORT_RAW"
+  | "DATA_CSV_EXPORT_DEID"
+  | "NOTEBOOK_REGISTER"
+  | "NOTEBOOK_UPDATE"
+  | "NOTEBOOK_DELETE"
+  | "ARTIFACT_REGISTER"
+  | "ARTIFACT_DELETE";
 
 export async function writeAudit(params: {
   userId?: string | null;

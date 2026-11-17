@@ -47,6 +47,11 @@ model Project {
   references          Reference[]
   notes               Note[]
   manuscript          Manuscript?
+  dataFields          DataField[]
+  dataRows            DataRow[]
+  analysisExports     AnalysisExport[]
+  notebooks           Notebook[]
+  artifacts           AnalysisArtifact[]
 }
 
 /// Interactive EQUATOR checklist progress for a project.
@@ -155,4 +160,101 @@ model Manuscript {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+/// Column definition for a project's simple tabular capture form.
+model DataField {
+  id        String   @id @default(cuid())
+  projectId String
+  /// Display label
+  name      String
+  /// Stable key used in CSV / JSON values (slug)
+  key       String
+  /// string | number | boolean | date | text
+  fieldType String   @default("string")
+  isPhi     Boolean  @default(false)
+  /// hash = replace PHI with salted hash on de-ID; strip = omit column
+  deidMode  String   @default("strip")
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, key])
+  @@index([projectId, position])
+}
+
+/// One captured row; values is JSON map of field key → stringified value.
+model DataRow {
+  id          String   @id @default(cuid())
+  projectId   String
+  valuesJson  String   @default("{}")
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+}
+
+/// Snapshot of a de-identified analysis dataset written under analysis/.
+model AnalysisExport {
+  id                String   @id @default(cuid())
+  projectId         String
+  fileName          String
+  /// Relative path under STORAGE_ROOT (e.g. projects/<id>/analysis/deid-….csv)
+  relativePath      String
+  rowCount          Int      @default(0)
+  fieldCount        Int      @default(0)
+  phiFieldsStripped String   @default("")
+  phiFieldsHashed   String   @default("")
+  createdById       String?
+  createdAt         DateTime @default(now())
+  project           Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+}
+
+/// Registered external Python notebook/script (no in-app kernel).
+model Notebook {
+  id          String   @id @default(cuid())
+  projectId   String
+  title       String
+  /// ipynb | py | qmd
+  kind        String   @default("ipynb")
+  /// External absolute/relative path or vscode:// / file:// deep link
+  externalPath String  @default("")
+  /// Optional uploaded copy under STORAGE_ROOT/projects/<id>/notebooks/
+  storagePath String?
+  fileName    String?
+  description String   @default("")
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  artifacts   AnalysisArtifact[]
+
+  @@index([projectId])
+}
+
+/// Registered figure/table output with provenance back to notebook + dataset.
+model AnalysisArtifact {
+  id               String    @id @default(cuid())
+  projectId        String
+  notebookId       String?
+  title            String
+  /// figure | table | other
+  kind             String    @default("figure")
+  /// Path or URL to the artifact file
+  pathOrUrl        String    @default("")
+  /// Free-text / JSON provenance (notebook + analysis export id, hash, notes)
+  provenanceJson   String    @default("{}")
+  createdById      String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  project          Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  notebook         Notebook? @relation(fields: [notebookId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([notebookId])
 }

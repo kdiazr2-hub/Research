@@ -48,6 +48,77 @@ export function literatureIsPhiSafe(_role: Role): boolean {
   return true;
 }
 
+/**
+ * Raw PHI table access: Owner always; Investigator only with canViewPhi grant.
+ * Collaborator / Analyst / Viewer default to no PHI table access.
+ */
+export function canAccessPhiTable(role: Role, canViewPhi: boolean): boolean {
+  if (role === "OWNER") return true;
+  if (role === "INVESTIGATOR" && canViewPhi) return true;
+  return false;
+}
+
+/**
+ * Define / edit field schema: Owner or Investigator.
+ * Marking a field as PHI still requires canAccessPhiTable (Owner / Inv+grant).
+ */
+export function canEditDataSchema(role: Role, _canViewPhi: boolean): boolean {
+  return role === "OWNER" || role === "INVESTIGATOR";
+}
+
+/**
+ * Enter / edit rows that may contain PHI values.
+ * Owner / Investigator+PHI only. Collaborators do not get PHI table write.
+ */
+export function canEditPhiRows(role: Role, canViewPhi: boolean): boolean {
+  return canAccessPhiTable(role, canViewPhi);
+}
+
+/**
+ * Collaborator may help with non-PHI column entry when they lack PHI grant.
+ * Analyst/Viewer never write tabular data.
+ */
+export function canEditNonPhiRows(role: Role): boolean {
+  return (
+    role === "OWNER" ||
+    role === "INVESTIGATOR" ||
+    role === "COLLABORATOR"
+  );
+}
+
+/** Any member may list / download de-identified analysis datasets. */
+export function canReadDeid(role: Role): boolean {
+  return ROLE_RANK[role] >= ROLE_RANK.VIEWER;
+}
+
+/**
+ * Trigger a de-ID export into analysis/: Owner, Investigator, Collaborator, Analyst.
+ * Viewers may download existing de-ID exports but not create new ones.
+ */
+export function canRunDeidExport(role: Role): boolean {
+  return (
+    role === "OWNER" ||
+    role === "INVESTIGATOR" ||
+    role === "COLLABORATOR" ||
+    role === "ANALYST"
+  );
+}
+
+/** Register notebooks / artifacts: Owner, Investigator, Collaborator, Analyst. */
+export function canRegisterAnalysis(role: Role): boolean {
+  return (
+    role === "OWNER" ||
+    role === "INVESTIGATOR" ||
+    role === "COLLABORATOR" ||
+    role === "ANALYST"
+  );
+}
+
+/** Raw PHI CSV export (not de-ID) — same gate as PHI table access. */
+export function canExportRawPhi(role: Role, canViewPhi: boolean): boolean {
+  return canAccessPhiTable(role, canViewPhi);
+}
+
 export async function requireMembership(
   userId: string,
   projectId: string,

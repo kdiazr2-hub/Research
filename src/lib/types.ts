@@ -32,3 +32,37 @@ export function isRole(value: string): value is Role {
 export function isPhiType(value: string): value is PhiType {
   return (PHI_TYPES as readonly string[]).includes(value);
 }
+
+export const FIELD_TYPES = [
+  "string",
+  "number",
+  "boolean",
+  "date",
+  "text",
+] as const;
+export type FieldType = (typeof FIELD_TYPES)[number];
+
+export function isFieldType(value: string): value is FieldType {
+  return (FIELD_TYPES as readonly string[]).includes(value);
+}
+
+export const DEID_MODES = ["strip", "hash"] as const;
+export type DeidMode = (typeof DEID_MODES)[number];
+
+export function isDeidMode(value: string): value is DeidMode {
+  return (DEID_MODES as readonly string[]).includes(value);
+}
+
+export const NOTEBOOK_KINDS = ["ipynb", "py", "qmd"] as const;
+export type NotebookKind = (typeof NOTEBOOK_KINDS)[number];
+
+export function isNotebookKind(value: string): value is NotebookKind {
+  return (NOTEBOOK_KINDS as readonly string[]).includes(value);
+}
+
+export const ARTIFACT_KINDS = ["figure", "table", "other"] as const;
+export type ArtifactKind = (typeof ARTIFACT_KINDS)[number];
+
+export function isArtifactKind(value: string): value is ArtifactKind {
+  return (ARTIFACT_KINDS as readonly string[]).includes(value);
+}

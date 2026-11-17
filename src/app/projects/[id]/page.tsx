@@ -11,6 +11,7 @@ import type { Role } from "@/lib/types";
 import { getGuideline, pickLocale } from "@/lib/equator";
 import { seedChecklistForProject } from "@/lib/checklist";
 import { ProjectNav } from "@/components/project-nav";
+import { projectNavLabels } from "@/lib/nav-labels";
 import { MembersPanel } from "./members-panel";
 import { PhiSettingsForm } from "./phi-settings-form";
 import { AuditPanel } from "./audit-panel";
@@ -84,6 +85,9 @@ export default async function ProjectDetailPage({ params }: Props) {
           "ROLE_CHANGE",
           "PHI_FLAG_CHANGE",
           "GUIDELINE_CHANGE",
+          "DATA_FIELD_PHI_MARK",
+          "DATA_CSV_EXPORT_DEID",
+          "NOTEBOOK_REGISTER",
         ].includes(l.action)
       );
 
@@ -114,13 +118,7 @@ export default async function ProjectDetailPage({ params }: Props) {
       <ProjectNav
         projectId={project.id}
         active="overview"
-        labels={{
-          overview: t.overview,
-          library: t.library,
-          notes: t.notes,
-          manuscript: t.manuscript,
-          export: t.export,
-        }}
+        labels={projectNavLabels(t)}
       />
 
       <EquatorPanel

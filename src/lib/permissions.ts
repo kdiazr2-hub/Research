@@ -27,6 +27,27 @@ export function canInvite(role: Role): boolean {
   return role === "OWNER";
 }
 
+/** Library / notes / draft write: Owner, Investigator, Collaborator. */
+export function canEditLiterature(role: Role): boolean {
+  return (
+    role === "OWNER" || role === "INVESTIGATOR" || role === "COLLABORATOR"
+  );
+}
+
+/** All members can read literature; Analyst/Viewer are read-only. */
+export function canReadLiterature(role: Role): boolean {
+  return ROLE_RANK[role] >= ROLE_RANK.VIEWER;
+}
+
+/**
+ * Literature refs are scientific metadata (not patient PHI).
+ * Analysts may read the library/notes/draft but never gain PHI/imaging
+ * privileges merely by opening references.
+ */
+export function literatureIsPhiSafe(_role: Role): boolean {
+  return true;
+}
+
 export async function requireMembership(
   userId: string,
   projectId: string,

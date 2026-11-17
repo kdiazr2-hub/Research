@@ -133,6 +133,48 @@ export const dictionaries = {
     exportTex: "LaTeX (.tex)",
     pandocHint:
       "Si Pandoc está instalado en el servidor, se generan .docx/.tex. Si no, el zip incluye instrucciones para correrlo en local.",
+    imaging: "Imaging",
+    security: "Seguridad",
+    imagingVaultNote:
+      "Vault de imaging (no PACS): metadatos + archivo cifrado/local. Sin visor DICOM clínico.",
+    noImagingToNotebooks:
+      "Por defecto los píxeles/DICOM no se envían a notebooks de análisis. Solo working copies con IDs redacted.",
+    imagingDenied:
+      "Sin acceso a imaging. Requiere Owner o Investigator con grant. Collaborator/Viewer/Analyst: no por defecto.",
+    imagingSeparateFromManuscript:
+      "El acceso al manuscrito/biblioteca no otorga imaging ni PHI.",
+    addStudy: "Registrar estudio",
+    subjectKey: "Clave de sujeto",
+    modality: "Modalidad",
+    studyDate: "Fecha del estudio",
+    accessionStub: "Accession (stub interno)",
+    accessionAuto: "auto si vacío",
+    patientNameVaultOnly: "Nombre paciente (solo vault)",
+    mrnVaultOnly: "MRN (solo vault)",
+    uploadFile: "Archivo DICOM / imagen",
+    studies: "Estudios en vault",
+    noStudies: "Sin estudios aún.",
+    downloadVault: "Descargar vault",
+    downloadWorking: "Working copy (JSON)",
+    markDelete: "Marcar borrado",
+    purgeStub: "Purge stub",
+    retention: "Retención",
+    retentionDate: "Fecha de destrucción prevista",
+    retentionStubNote:
+      "Mark-for-delete y purge son stubs auditados; el job programado queda fuera de M3.",
+    securityChecklist: "Checklist de seguridad",
+    securityDisclaimer:
+      "No es certificación legal. Ayuda a revisar hosting local, flags PHI, de-ID default y roles de imaging.",
+    auditLimited:
+      "Vista limitada (no Owner). Owner ve el log completo con filtros.",
+    filterAction: "Acción",
+    filterAll: "Todas",
+    filterUser: "Usuario",
+    filterQuery: "Buscar",
+    filterFrom: "Desde",
+    filterTo: "Hasta",
+    applyFilters: "Filtrar",
+    openFullAudit: "Abrir auditoría con filtros",
   },
   en: {
     brand: "Research",
@@ -266,6 +308,48 @@ export const dictionaries = {
     exportTex: "LaTeX (.tex)",
     pandocHint:
       "If Pandoc is installed on the server, .docx/.tex are generated. Otherwise the zip includes local run instructions.",
+    imaging: "Imaging",
+    security: "Security",
+    imagingVaultNote:
+      "Imaging vault (not a PACS): metadata + encrypted/local file. No clinical DICOM viewer.",
+    noImagingToNotebooks:
+      "By default pixels/DICOM are never sent to analysis notebooks. Only redacted working-copy metadata.",
+    imagingDenied:
+      "No imaging access. Requires Owner or Investigator with grant. Collaborator/Viewer/Analyst: default no.",
+    imagingSeparateFromManuscript:
+      "Manuscript/library access does not grant imaging or PHI.",
+    addStudy: "Register study",
+    subjectKey: "Subject key",
+    modality: "Modality",
+    studyDate: "Study date",
+    accessionStub: "Accession (internal stub)",
+    accessionAuto: "auto if empty",
+    patientNameVaultOnly: "Patient name (vault only)",
+    mrnVaultOnly: "MRN (vault only)",
+    uploadFile: "DICOM / image file",
+    studies: "Vault studies",
+    noStudies: "No studies yet.",
+    downloadVault: "Download vault",
+    downloadWorking: "Working copy (JSON)",
+    markDelete: "Mark for delete",
+    purgeStub: "Purge stub",
+    retention: "Retention",
+    retentionDate: "Planned destruction date",
+    retentionStubNote:
+      "Mark-for-delete and purge are audited stubs; scheduled purge job is out of M3.",
+    securityChecklist: "Security checklist",
+    securityDisclaimer:
+      "Not a legal certification. Helps review local hosting, PHI flags, de-ID default, and imaging roles.",
+    auditLimited:
+      "Limited view (not Owner). Owner sees the full log with filters.",
+    filterAction: "Action",
+    filterAll: "All",
+    filterUser: "User",
+    filterQuery: "Search",
+    filterFrom: "From",
+    filterTo: "To",
+    applyFilters: "Filter",
+    openFullAudit: "Open filtered audit",
   },
 } as const;
 

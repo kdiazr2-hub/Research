@@ -69,6 +69,30 @@ export function MembersPanel({
     router.refresh();
   }
 
+  async function toggleGrant(
+    membershipId: string,
+    patch: { canViewPhi?: boolean; canViewImaging?: boolean }
+  ) {
+    setError(null);
+    const member = members.find((m) => m.id === membershipId);
+    if (!member) return;
+    const res = await fetch(`/api/projects/${projectId}/members`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        membershipId,
+        role: member.role,
+        canViewPhi: patch.canViewPhi ?? member.canViewPhi,
+        canViewImaging: patch.canViewImaging ?? member.canViewImaging,
+      }),
+    });
+    if (!res.ok) {
+      setError(labels.error);
+      return;
+    }
+    router.refresh();
+  }
+
   return (
     <div>
       <table className="table">
@@ -106,8 +130,38 @@ export function MembersPanel({
                   m.role
                 )}
               </td>
-              <td>{m.canViewPhi ? "✓" : "—"}</td>
-              <td>{m.canViewImaging ? "✓" : "—"}</td>
+              <td>
+                {canManage && m.role !== "OWNER" ? (
+                  <input
+                    type="checkbox"
+                    checked={m.canViewPhi}
+                    aria-label="PHI grant"
+                    onChange={(e) =>
+                      toggleGrant(m.id, { canViewPhi: e.target.checked })
+                    }
+                  />
+                ) : m.canViewPhi || m.role === "OWNER" ? (
+                  "✓"
+                ) : (
+                  "—"
+                )}
+              </td>
+              <td>
+                {canManage && m.role !== "OWNER" ? (
+                  <input
+                    type="checkbox"
+                    checked={m.canViewImaging}
+                    aria-label="Imaging grant"
+                    onChange={(e) =>
+                      toggleGrant(m.id, { canViewImaging: e.target.checked })
+                    }
+                  />
+                ) : m.canViewImaging || m.role === "OWNER" ? (
+                  "✓"
+                ) : (
+                  "—"
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

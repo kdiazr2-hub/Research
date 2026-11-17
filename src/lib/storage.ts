@@ -21,6 +21,16 @@ export function projectNotebooksDir(projectId: string): string {
   return path.join(storageRoot(), "projects", projectId, "notebooks");
 }
 
+/** Encrypted imaging vault (original DICOM / images). Never under analysis/. */
+export function projectImagingVaultDir(projectId: string): string {
+  return path.join(storageRoot(), "projects", projectId, "imaging", "vault");
+}
+
+/** Stripped working-copy metadata JSON only (no pixels by default). */
+export function projectImagingWorkingDir(projectId: string): string {
+  return path.join(storageRoot(), "projects", projectId, "imaging", "working");
+}
+
 export async function ensureDir(dir: string): Promise<void> {
   await mkdir(dir, { recursive: true });
 }

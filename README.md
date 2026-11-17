@@ -1,9 +1,10 @@
-# Investigación — Research Hub (M2)
+# Investigación — Research Hub (M3)
 
 Local-first clinical / biomedical **research project hub**.  
 **M0:** auth, projects, roles, PHI/consent flags, EQUATOR templates + checklist, audit.  
 **M1:** BibTeX/RIS library, PDF attach, notes linked to refs, Markdown manuscript with citekeys, Quarto/Pandoc export path.  
-**M2:** tabular data fields/rows, PHI mark + de-ID → `analysis/`, Python notebook/artifact registration (no in-app kernel).
+**M2:** tabular data fields/rows, PHI mark + de-ID → `analysis/`, Python notebook/artifact registration (no in-app kernel).  
+**M3:** imaging vault (metadata + encrypted/local upload), imaging roles separate from manuscript, working-copy ID strip, retention stubs, hardened audit filters, security checklist.
 
 ## Stack
 
@@ -13,20 +14,21 @@ Local-first clinical / biomedical **research project hub**.
 | DB | **SQLite** via Prisma 5 | Local-first; Postgres later |
 | Auth | **NextAuth.js** email + password (bcrypt) | No SMTP required |
 | i18n | Cookie + dictionaries **ES/EN** | Header switcher |
-| Files | Local `STORAGE_ROOT` / `EXPORT_ROOT` | PDFs, `analysis/` CSVs, notebook uploads |
+| Files | Local `STORAGE_ROOT` / `EXPORT_ROOT` | PDFs, `analysis/`, notebooks, **imaging vault** |
+| Imaging | Metadata + AES-GCM vault blobs (optional key) | **Not a PACS / DICOM viewer** |
 | Export | Quarto/Pandoc skeleton → `.docx` / `.tex` | Pandoc optional on PATH |
-| Analysis | External Jupyter / VS Code / Positron | Python only; de-ID datasets by default |
+| Analysis | External Jupyter / VS Code / Positron | Python only; de-ID datasets; **no imaging by default** |
 
 ## Prerequisites
 
 - Node.js 20+ and npm
-- Optional: [Pandoc](https://pandoc.org/installing.html) (and/or Quarto) for server-side Word/LaTeX; without it the zip still downloads with run instructions
+- Optional: [Pandoc](https://pandoc.org/installing.html) (and/or Quarto) for server-side Word/LaTeX
 
 ## Run locally
 
 ```bash
 cp .env.example .env
-# defaults are fine for local
+# defaults are fine for local; set IMAGING_VAULT_KEY for AES-GCM vault blobs
 
 npm install
 npx prisma migrate dev
@@ -40,52 +42,42 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Email | Password | Role on fixture project |
 | --- | --- | --- |
-| `kevin@example.com` | `password123` | OWNER (PHI table R/W) |
-| `ana@example.com` | `password123` | COLLABORATOR (no PHI table; non-PHI columns only) |
-| `luis@example.com` | `password123` | ANALYST (de-ID datasets + notebooks; no PHI table) |
+| `kevin@example.com` | `password123` | OWNER (PHI + imaging) |
+| `ana@example.com` | `password123` | COLLABORATOR (no PHI table, **no imaging**) |
+| `luis@example.com` | `password123` | ANALYST (de-ID + notebooks; **no imaging**) |
 
-Fixture: **Synthetic CT observational pilot** (CARE, `PHI_IMAGING` flags, sample BibTeX, tabular fields with PHI mark, stub notebook + artifact).
+Fixture: **Synthetic CT observational pilot** (CARE, `PHI_IMAGING`, tabular PHI fields, stub notebook, **seed CT imaging study** + retention date 2028-12-31).
 
-## M2 what works
+## M3 what works
 
-1. Project nav: Overview · Library · Notes · **Data** · **Analysis** · Manuscript · Export
-2. Define tabular **fields** (name, type, PHI flag, de-ID mode strip/hash)
-3. Enter **rows**; import/export **CSV**
-4. **De-ID export** strips/hashes PHI → CSV under `STORAGE_ROOT/projects/<id>/analysis/` (default analysis path)
-5. Register **Python** notebooks/scripts (`.ipynb` / `.py` / `.qmd` path or upload); deep-link / open instructions (no kernel)
-6. Register **artifacts** (figure/table) with provenance (notebook + analysis dataset)
-7. Roles: Owner / Investigator+PHI grant edit PHI tables; Collaborator/Viewer default without PHI table access; Analyst gets de-ID only
-8. Audit: `DATA_FIELD_PHI_MARK`, `DATA_CSV_EXPORT_DEID`, `NOTEBOOK_REGISTER`, …
+1. Project nav adds **Imaging**, **Security**, **Audit** (filtered)
+2. **Imaging vault:** register study metadata (modality, study date, accession stub, subject key) + optional DICOM/PNG/JPEG/NIfTI/zip upload under `STORAGE_ROOT/projects/<id>/imaging/vault/` (AES-GCM when `IMAGING_VAULT_KEY` set)
+3. **Roles:** Collaborator / Viewer / Analyst default **no** imaging; Owner always; Investigator only with `canViewImaging` grant (toggle in Members). Manuscript access ≠ imaging
+4. **Working copies:** stripped JSON under `imaging/working/` (no pixels, identifiers redacted). Analysis page reminds: never send imaging to notebooks by default
+5. **Retention:** project-level `retentionDestroyAt` + per-study mark-for-delete / purge **stubs** (audited; scheduled job deferred)
+6. **Security checklist** page: local hosting, PHI flags, de-ID default, imaging roles, vault key
+7. **Audit** page: filter by action / user / date / text search
 
 ## Stubbed / deferred
 
-- Live Zotero sync
-- Full PDF.js viewer / real highlight anchoring
-- Rich CSL formatting in-browser
-- **Imaging vault / DICOM** (M3)
-- Embedded Jupyter kernel, R, AI features
-- In-app Word preview
+- Full DICOM viewer / PACS / HL7/FHIR
+- Scheduled retention purge worker
+- Live Zotero sync; embedded Jupyter; R; AI
+- Rich CSL in-browser; in-app Word preview
 
-## Export without server Pandoc
-
-Unzip the download, then:
+## Smoke helpers
 
 ```bash
-pandoc manuscript.qmd --citeproc --bibliography=references.bib -o manuscript.docx
-pandoc manuscript.qmd --citeproc --bibliography=references.bib -o manuscript.tex
-# or: quarto render manuscript.qmd --to docx
+npx tsx scripts/smoke-deid.ts
+npx tsx scripts/smoke-imaging.ts
 ```
 
-## API sketch (M2 additions)
+## API sketch (M3 additions)
 
-- `GET|POST /api/projects/:id/data/fields`
-- `PATCH|DELETE /api/projects/:id/data/fields/:fieldId`
-- `GET|POST /api/projects/:id/data/rows`
-- `PATCH|DELETE /api/projects/:id/data/rows/:rowId`
-- `GET|POST /api/projects/:id/data/csv` (`?mode=raw|deid`)
-- `GET|POST /api/projects/:id/data/deid` · `GET .../deid/:exportId`
-- `GET|POST /api/projects/:id/notebooks` · `PATCH|DELETE .../notebooks/:id`
-- `GET|POST /api/projects/:id/artifacts` · `DELETE .../artifacts/:id`
+- `GET|POST /api/projects/:id/imaging`
+- `GET|PATCH /api/projects/:id/imaging/:studyId` (`?download=vault|working`)
+- `GET|PATCH /api/projects/:id/retention`
+- `GET /api/projects/:id/audit?action=&user=&q=&from=&to=`
 
 ## Postgres later
 

@@ -88,6 +88,9 @@ export default async function ProjectDetailPage({ params }: Props) {
           "DATA_FIELD_PHI_MARK",
           "DATA_CSV_EXPORT_DEID",
           "NOTEBOOK_REGISTER",
+          "RETENTION_SET",
+          "IMAGING_MARK_DELETE",
+          "IMAGING_PURGE_STUB",
         ].includes(l.action)
       );
 
@@ -183,6 +186,9 @@ export default async function ProjectDetailPage({ params }: Props) {
                 consentDocUrl: project.consentDocUrl ?? "",
                 legalBasis: project.legalBasis ?? "",
                 analysisDeidDefault: project.analysisDeidDefault,
+                retentionDestroyAt: project.retentionDestroyAt
+                  ? project.retentionDestroyAt.toISOString().slice(0, 10)
+                  : "",
               }}
               labels={{
                 projectName: t.projectName,
@@ -198,6 +204,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 consentUrl: t.consentUrl,
                 legalBasis: t.legalBasis,
                 analysisDeid: t.analysisDeid,
+                retentionDate: t.retentionDate,
                 save: t.save,
                 error: t.error,
                 success: t.success,
@@ -214,7 +221,14 @@ export default async function ProjectDetailPage({ params }: Props) {
       </div>
 
       <section className="panel">
-        <h2>{t.audit}</h2>
+        <div className="page-header" style={{ marginBottom: "0.75rem" }}>
+          <h2 style={{ margin: 0 }}>{t.audit}</h2>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            <Link href={`/projects/${project.id}/audit`}>{t.openFullAudit}</Link>
+            <Link href={`/projects/${project.id}/security`}>{t.security}</Link>
+            <Link href={`/projects/${project.id}/imaging`}>{t.imaging}</Link>
+          </div>
+        </div>
         <AuditPanel
           entries={auditVisible.map((l) => ({
             id: l.id,

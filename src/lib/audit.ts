@@ -23,7 +23,16 @@ export type AuditAction =
   | "NOTEBOOK_UPDATE"
   | "NOTEBOOK_DELETE"
   | "ARTIFACT_REGISTER"
-  | "ARTIFACT_DELETE";
+  | "ARTIFACT_DELETE"
+  | "IMAGING_STUDY_CREATE"
+  | "IMAGING_STUDY_UPDATE"
+  | "IMAGING_UPLOAD"
+  | "IMAGING_DOWNLOAD"
+  | "IMAGING_WORKING_COPY"
+  | "IMAGING_MARK_DELETE"
+  | "IMAGING_PURGE_STUB"
+  | "RETENTION_SET"
+  | "SECURITY_CHECKLIST_VIEW";
 
 export async function writeAudit(params: {
   userId?: string | null;

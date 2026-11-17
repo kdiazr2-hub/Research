@@ -119,6 +119,38 @@ export function canExportRawPhi(role: Role, canViewPhi: boolean): boolean {
   return canAccessPhiTable(role, canViewPhi);
 }
 
+/**
+ * Imaging vault access (separate from manuscript / literature).
+ * Owner always; Investigator only with canViewImaging grant.
+ * Collaborator / Analyst / Viewer default to no imaging.
+ */
+export function canAccessImaging(
+  role: Role,
+  canViewImaging: boolean
+): boolean {
+  if (role === "OWNER") return true;
+  if (role === "INVESTIGATOR" && canViewImaging) return true;
+  return false;
+}
+
+/** Upload / edit imaging metadata + vault files — same gate as access. */
+export function canEditImaging(role: Role, canViewImaging: boolean): boolean {
+  return canAccessImaging(role, canViewImaging);
+}
+
+/**
+ * Mark-for-delete / purge stubs: Owner only (retention admin).
+ * Investigators with imaging grant may request mark via UI but API is Owner.
+ */
+export function canManageRetention(role: Role): boolean {
+  return role === "OWNER";
+}
+
+/** Security checklist + hardened audit filters: any member may view summary; Owner sees full. */
+export function canViewFullAudit(role: Role): boolean {
+  return role === "OWNER";
+}
+
 export async function requireMembership(
   userId: string,
   projectId: string,

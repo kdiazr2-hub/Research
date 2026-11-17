@@ -66,3 +66,15 @@ export type ArtifactKind = (typeof ARTIFACT_KINDS)[number];
 export function isArtifactKind(value: string): value is ArtifactKind {
   return (ARTIFACT_KINDS as readonly string[]).includes(value);
 }
+
+export {
+  IMAGING_MODALITIES,
+  IMAGING_FILE_KINDS,
+  RETENTION_STATUSES,
+  type ImagingModality,
+  type ImagingFileKind,
+  type RetentionStatus,
+  isImagingModality,
+  isImagingFileKind,
+  isRetentionStatus,
+} from "@/lib/imaging";

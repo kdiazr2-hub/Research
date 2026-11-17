@@ -6,8 +6,11 @@ export function projectNavLabels(t: Dictionary) {
     library: t.library,
     notes: t.notes,
     data: t.data,
+    imaging: t.imaging,
     analysis: t.analysis,
     manuscript: t.manuscript,
     export: t.export,
+    security: t.security,
+    audit: t.audit,
   };
 }

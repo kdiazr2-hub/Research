@@ -1,7 +1,20 @@
 import bcrypt from "bcryptjs";
+import { writeFile } from "fs/promises";
+import path from "path";
 import { PrismaClient } from "@prisma/client";
 import { getGuideline } from "../src/lib/equator";
 import { seedManuscriptMarkdown } from "../src/lib/manuscript";
+import {
+  encryptVaultBytes,
+  makeAccessionStub,
+  stripImagingIdentifiers,
+} from "../src/lib/imaging";
+import {
+  ensureDir,
+  projectImagingVaultDir,
+  projectImagingWorkingDir,
+  storageRoot,
+} from "../src/lib/storage";
 
 const prisma = new PrismaClient();
 
@@ -80,6 +93,7 @@ async function main() {
         consentDocUrl: "https://example.org/consent-protocol.pdf",
         legalBasis: "IRB waiver demo — synthetic data only",
         analysisDeidDefault: true,
+        retentionDestroyAt: new Date("2028-12-31T00:00:00.000Z"),
         memberships: {
           create: [
             {
@@ -323,6 +337,107 @@ async function main() {
           projectId,
           action: "NOTEBOOK_REGISTER",
           metadata: JSON.stringify({ seed: true, notebookId: nb.id }),
+        },
+      });
+    }
+
+    // M3 fixture: imaging vault metadata + encrypted synthetic PNG stub
+    const imgCount = await prisma.imagingStudy.count({ where: { projectId } });
+    if (imgCount === 0) {
+      await prisma.project.update({
+        where: { id: projectId },
+        data: {
+          retentionDestroyAt: new Date("2028-12-31T00:00:00.000Z"),
+        },
+      });
+
+      const studyDate = new Date("2024-06-15T00:00:00.000Z");
+      const accessionStub = makeAccessionStub(projectId, "SYN-001");
+      const study = await prisma.imagingStudy.create({
+        data: {
+          projectId,
+          subjectKey: "SYN-001",
+          modality: "CT",
+          studyDate,
+          accessionStub,
+          description: "Synthetic chest CT fixture — no real patient",
+          identifiersJson: JSON.stringify({
+            patientName: "DOE^SYNTHETIC",
+            mrn: "MRN-DEMO-111",
+          }),
+          fileKind: "png",
+          contentType: "image/png",
+          createdById: owner.id,
+        },
+      });
+
+      // Minimal valid 1x1 PNG
+      const png = Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+        "base64"
+      );
+      await ensureDir(projectImagingVaultDir(projectId));
+      const vaultRel = path
+        .join(
+          "projects",
+          projectId,
+          "imaging",
+          "vault",
+          `${study.id}-seed-ct.png.enc`
+        )
+        .replace(/\\/g, "/");
+      await writeFile(
+        path.join(storageRoot(), vaultRel),
+        encryptVaultBytes(png)
+      );
+
+      const working = stripImagingIdentifiers({
+        studyId: study.id,
+        projectId,
+        subjectKey: "SYN-001",
+        modality: "CT",
+        studyDate,
+        accessionStub,
+        description: "Synthetic chest CT fixture — no real patient",
+        fileKind: "png",
+      });
+      await ensureDir(projectImagingWorkingDir(projectId));
+      const workingRel = path
+        .join("projects", projectId, "imaging", "working", `${study.id}.json`)
+        .replace(/\\/g, "/");
+      await writeFile(
+        path.join(storageRoot(), workingRel),
+        JSON.stringify(working, null, 2),
+        "utf8"
+      );
+
+      await prisma.imagingStudy.update({
+        where: { id: study.id },
+        data: {
+          fileName: "seed-ct.png",
+          vaultPath: vaultRel,
+          workingCopyPath: workingRel,
+          fileSize: png.length,
+        },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId: owner.id,
+          projectId,
+          action: "IMAGING_STUDY_CREATE",
+          metadata: JSON.stringify({ seed: true, studyId: study.id }),
+        },
+      });
+      await prisma.auditLog.create({
+        data: {
+          userId: owner.id,
+          projectId,
+          action: "RETENTION_SET",
+          metadata: JSON.stringify({
+            seed: true,
+            after: "2028-12-31T00:00:00.000Z",
+          }),
         },
       });
     }

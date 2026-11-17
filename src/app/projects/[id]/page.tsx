@@ -8,11 +8,12 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { AppShell } from "@/components/app-shell";
 import { canAdminProject, canEditProjectMeta } from "@/lib/permissions";
 import type { Role } from "@/lib/types";
-import { checklistFor } from "@/lib/reporting-guidelines";
+import { getGuideline, pickLocale } from "@/lib/equator";
+import { seedChecklistForProject } from "@/lib/checklist";
 import { MembersPanel } from "./members-panel";
 import { PhiSettingsForm } from "./phi-settings-form";
 import { AuditPanel } from "./audit-panel";
-import { ChecklistStub } from "./checklist-stub";
+import { EquatorPanel } from "./equator-panel";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -40,6 +41,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         orderBy: { createdAt: "desc" },
         take: 50,
       },
+      checklistItems: true,
     },
   });
   if (!project) notFound();
@@ -49,6 +51,27 @@ export default async function ProjectDetailPage({ params }: Props) {
   const role = membership.role as Role;
   const isOwner = canAdminProject(role);
   const canEdit = canEditProjectMeta(role);
+  const guideline = getGuideline(project.reportingGuideline);
+
+  if (project.checklistItems.length === 0 && guideline.checklist.length > 0) {
+    await seedChecklistForProject(id, project.reportingGuideline);
+    project.checklistItems = await prisma.checklistItem.findMany({
+      where: { projectId: id },
+    });
+  }
+
+  const byKey = new Map(project.checklistItems.map((c) => [c.itemKey, c]));
+  const checklistItems = guideline.checklist.map((item) => {
+    const state = byKey.get(item.key);
+    return {
+      key: item.key,
+      code: item.code,
+      section: pickLocale(item.section, locale),
+      title: pickLocale(item.title, locale),
+      checked: state?.checked ?? false,
+      notes: state?.notes ?? "",
+    };
+  });
 
   const auditVisible = isOwner
     ? project.auditLogs
@@ -59,6 +82,7 @@ export default async function ProjectDetailPage({ params }: Props) {
           "MEMBER_INVITE",
           "ROLE_CHANGE",
           "PHI_FLAG_CHANGE",
+          "GUIDELINE_CHANGE",
         ].includes(l.action)
       );
 
@@ -86,16 +110,27 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <section className="panel">
-        <h2>{t.checklist}</h2>
-        <ChecklistStub
-          title={t.checklist}
-          guideline={project.reportingGuideline}
-          version={project.reportingGuidelineVersion}
-          items={checklistFor(project.reportingGuideline)}
-          stubNote={t.checklistStubNote}
-        />
-      </section>
+      <EquatorPanel
+        projectId={project.id}
+        canEdit={canEdit}
+        locale={locale}
+        sourceUrl={guideline.sourceUrl}
+        citation={guideline.citation}
+        sections={guideline.sections.map((s) => ({
+          id: s.id,
+          title: pickLocale(s.title, locale),
+        }))}
+        items={checklistItems}
+        labels={{
+          sectionsOutline: t.sectionsOutline,
+          checklist: t.checklist,
+          notes: t.checklistNotes,
+          progress: t.checklistProgress,
+          source: t.equatorSource,
+          saved: t.success,
+          error: t.error,
+        }}
+      />
 
       <div className="panel-grid two">
         <section className="panel">
@@ -127,6 +162,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             <PhiSettingsForm
               projectId={project.id}
               canChangePhiFlags={isOwner}
+              locale={locale}
               initial={{
                 name: project.name,
                 description: project.description,
@@ -141,9 +177,8 @@ export default async function ProjectDetailPage({ params }: Props) {
                 projectName: t.projectName,
                 description: t.description,
                 reportingGuideline: t.reportingGuideline,
-                care: t.care,
-                prisma: t.prisma,
-                otherGeneric: t.otherGeneric,
+                switchGuidelineWarn: t.switchGuidelineWarn,
+                preserveChecks: t.preserveChecks,
                 phiType: t.phiType,
                 phiNone: t.phiNone,
                 phi: t.phi,

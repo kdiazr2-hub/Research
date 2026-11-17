@@ -47,13 +47,13 @@ Fixture project: **Synthetic CT observational pilot** (`PHI_IMAGING`, consent do
 2. Create / list / update / delete projects (delete = owner)
 3. Invite existing users; change roles (owner-only); last-owner protected
 4. PHI type (`NONE` / `PHI` / `PHI_IMAGING`), consent flags, legal basis, analysis-deID-default
-5. **EQUATOR work type** on create: `CARE` / `PRISMA` / `OTHER` (+ version) with short checklist stub
+5. **EQUATOR guidelines** on create/edit: CARE, PRISMA, CONSORT, STROBE, SPIRIT, STARD, OTHER — manuscript outline + interactive checklist (ES/EN)
 6. Audit log on project page (login, project create/update, invite, role change, PHI flag change, access denied)
 7. ES ↔ EN language switch
 
 ## Stubbed / deferred
 
-- Full EQUATOR manuscript templates / interactive checklist (M1+)
+- Manuscript editor auto-filled from EQUATOR outline (M1+); Quarto export per guideline
 - Encrypted object storage / imaging vault UI
 - Email magic links / SSO
 - Postgres + RLS

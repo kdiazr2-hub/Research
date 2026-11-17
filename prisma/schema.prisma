@@ -19,6 +19,7 @@ model User {
   updatedAt    DateTime     @updatedAt
   memberships  Membership[]
   auditLogs    AuditLog[]
+  notes        Note[]
 }
 
 model Project {
@@ -43,6 +44,9 @@ model Project {
   memberships         Membership[]
   auditLogs           AuditLog[]
   checklistItems      ChecklistItem[]
+  references          Reference[]
+  notes               Note[]
+  manuscript          Manuscript?
 }
 
 /// Interactive EQUATOR checklist progress for a project.
@@ -90,4 +94,65 @@ model AuditLog {
   @@index([projectId, createdAt])
   @@index([userId, createdAt])
   @@index([action, createdAt])
+}
+
+/// Bibliographic item in a project library (BibTeX/RIS import; no Zotero sync in MVP).
+model Reference {
+  id          String   @id @default(cuid())
+  projectId   String
+  citeKey     String
+  title       String   @default("")
+  authors     String   @default("")
+  year        String   @default("")
+  journal     String   @default("")
+  doi         String   @default("")
+  url         String   @default("")
+  abstract    String   @default("")
+  /// article | book | inproceedings | misc | …
+  entryType   String   @default("article")
+  tags        String   @default("")
+  bibtexRaw   String   @default("")
+  /// Relative path under STORAGE_ROOT (local filesystem for MVP)
+  pdfPath     String?
+  pdfFileName String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  notes       Note[]
+
+  @@unique([projectId, citeKey])
+  @@index([projectId])
+}
+
+/// Note linked to a reference (optional page/highlight stubs for MVP).
+model Note {
+  id            String    @id @default(cuid())
+  projectId     String
+  referenceId   String
+  authorId      String?
+  title         String    @default("")
+  body          String    @default("")
+  /// Optional PDF page stub (e.g. "12")
+  pageStub      String    @default("")
+  /// Optional highlight quote stub
+  highlightStub String    @default("")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reference     Reference @relation(fields: [referenceId], references: [id], onDelete: Cascade)
+  author        User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([referenceId])
+}
+
+/// One Markdown manuscript draft per project, seeded from EQUATOR section outline.
+model Manuscript {
+  id        String   @id @default(cuid())
+  projectId String   @unique
+  title     String   @default("")
+  markdown  String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }

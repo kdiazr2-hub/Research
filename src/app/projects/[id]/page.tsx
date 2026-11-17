@@ -10,6 +10,7 @@ import { canAdminProject, canEditProjectMeta } from "@/lib/permissions";
 import type { Role } from "@/lib/types";
 import { getGuideline, pickLocale } from "@/lib/equator";
 import { seedChecklistForProject } from "@/lib/checklist";
+import { ProjectNav } from "@/components/project-nav";
 import { MembersPanel } from "./members-panel";
 import { PhiSettingsForm } from "./phi-settings-form";
 import { AuditPanel } from "./audit-panel";
@@ -109,6 +110,18 @@ export default async function ProjectDetailPage({ params }: Props) {
           ) : null}
         </div>
       </div>
+
+      <ProjectNav
+        projectId={project.id}
+        active="overview"
+        labels={{
+          overview: t.overview,
+          library: t.library,
+          notes: t.notes,
+          manuscript: t.manuscript,
+          export: t.export,
+        }}
+      />
 
       <EquatorPanel
         projectId={project.id}

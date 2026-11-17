@@ -40,6 +40,10 @@ prisma/dev.db-journal
 *.db
 *.db-journal
 
+# local-first object/PDF storage (MVP)
+/storage
+/exports
+
 # vercel
 .vercel
 

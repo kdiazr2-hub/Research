@@ -7,6 +7,7 @@ import { getLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionaries";
 import { AppShell } from "@/components/app-shell";
 import { ProjectNav } from "@/components/project-nav";
+import { projectNavLabels } from "@/lib/nav-labels";
 import { canEditLiterature } from "@/lib/permissions";
 import type { Role } from "@/lib/types";
 import { seedManuscriptMarkdown } from "@/lib/manuscript";
@@ -72,13 +73,7 @@ export default async function ManuscriptPage({ params }: Props) {
       <ProjectNav
         projectId={id}
         active="manuscript"
-        labels={{
-          overview: t.overview,
-          library: t.library,
-          notes: t.notes,
-          manuscript: t.manuscript,
-          export: t.export,
-        }}
+        labels={projectNavLabels(t)}
       />
       <ManuscriptClient
         projectId={id}

@@ -7,6 +7,7 @@ import { getLocale } from "@/i18n/get-locale";
 import { getDictionary } from "@/i18n/dictionaries";
 import { AppShell } from "@/components/app-shell";
 import { ProjectNav } from "@/components/project-nav";
+import { projectNavLabels } from "@/lib/nav-labels";
 import { canEditLiterature } from "@/lib/permissions";
 import type { Role } from "@/lib/types";
 import { LibraryClient } from "./library-client";
@@ -47,17 +48,7 @@ export default async function LibraryPage({ params }: Props) {
           </p>
         </div>
       </div>
-      <ProjectNav
-        projectId={id}
-        active="library"
-        labels={{
-          overview: t.overview,
-          library: t.library,
-          notes: t.notes,
-          manuscript: t.manuscript,
-          export: t.export,
-        }}
-      />
+      <ProjectNav projectId={id} active="library" labels={projectNavLabels(t)} />
       <LibraryClient
         projectId={id}
         initial={references}

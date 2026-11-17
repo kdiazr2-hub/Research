@@ -13,6 +13,14 @@ export function projectPdfDir(projectId: string): string {
   return path.join(storageRoot(), "projects", projectId, "pdfs");
 }
 
+export function projectAnalysisDir(projectId: string): string {
+  return path.join(storageRoot(), "projects", projectId, "analysis");
+}
+
+export function projectNotebooksDir(projectId: string): string {
+  return path.join(storageRoot(), "projects", projectId, "notebooks");
+}
+
 export async function ensureDir(dir: string): Promise<void> {
   await mkdir(dir, { recursive: true });
 }

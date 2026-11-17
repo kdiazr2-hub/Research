@@ -1,8 +1,9 @@
-# Investigación — Research Hub (M1)
+# Investigación — Research Hub (M2)
 
 Local-first clinical / biomedical **research project hub**.  
 **M0:** auth, projects, roles, PHI/consent flags, EQUATOR templates + checklist, audit.  
-**M1:** BibTeX/RIS library, PDF attach, notes linked to refs, Markdown manuscript with citekeys, Quarto/Pandoc export path.
+**M1:** BibTeX/RIS library, PDF attach, notes linked to refs, Markdown manuscript with citekeys, Quarto/Pandoc export path.  
+**M2:** tabular data fields/rows, PHI mark + de-ID → `analysis/`, Python notebook/artifact registration (no in-app kernel).
 
 ## Stack
 
@@ -12,8 +13,9 @@ Local-first clinical / biomedical **research project hub**.
 | DB | **SQLite** via Prisma 5 | Local-first; Postgres later |
 | Auth | **NextAuth.js** email + password (bcrypt) | No SMTP required |
 | i18n | Cookie + dictionaries **ES/EN** | Header switcher |
-| Files | Local `STORAGE_ROOT` / `EXPORT_ROOT` | PDFs + export scratch |
+| Files | Local `STORAGE_ROOT` / `EXPORT_ROOT` | PDFs, `analysis/` CSVs, notebook uploads |
 | Export | Quarto/Pandoc skeleton → `.docx` / `.tex` | Pandoc optional on PATH |
+| Analysis | External Jupyter / VS Code / Positron | Python only; de-ID datasets by default |
 
 ## Prerequisites
 
@@ -38,28 +40,30 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Email | Password | Role on fixture project |
 | --- | --- | --- |
-| `kevin@example.com` | `password123` | OWNER |
-| `ana@example.com` | `password123` | COLLABORATOR |
-| `luis@example.com` | `password123` | ANALYST (read literature; no PHI flags) |
+| `kevin@example.com` | `password123` | OWNER (PHI table R/W) |
+| `ana@example.com` | `password123` | COLLABORATOR (no PHI table; non-PHI columns only) |
+| `luis@example.com` | `password123` | ANALYST (de-ID datasets + notebooks; no PHI table) |
 
-Fixture: **Synthetic CT observational pilot** (CARE, `PHI_IMAGING` flags, sample BibTeX refs + note + draft).
+Fixture: **Synthetic CT observational pilot** (CARE, `PHI_IMAGING` flags, sample BibTeX, tabular fields with PHI mark, stub notebook + artifact).
 
-## M1 what works
+## M2 what works
 
-1. Project nav: Overview · Library · Notes · Manuscript · Export
-2. Import **BibTeX** or **RIS** into the project library (no Zotero sync)
-3. Reference list; attach/store PDF under `STORAGE_ROOT/projects/<id>/pdfs/`
-4. Notes linked to a reference with optional **page** / **highlight** stubs
-5. Markdown draft seeded from EQUATOR section outline; insert `[@citeKey]`
-6. Export zip: `manuscript.qmd` + `references.bib` + `README-EXPORT.md`; if Pandoc is on PATH, also `.docx` / `.tex`
-7. Roles: Collaborator/Owner/Investigator can edit literature; Viewer/Analyst read-only. Opening refs does **not** grant PHI/imaging
+1. Project nav: Overview · Library · Notes · **Data** · **Analysis** · Manuscript · Export
+2. Define tabular **fields** (name, type, PHI flag, de-ID mode strip/hash)
+3. Enter **rows**; import/export **CSV**
+4. **De-ID export** strips/hashes PHI → CSV under `STORAGE_ROOT/projects/<id>/analysis/` (default analysis path)
+5. Register **Python** notebooks/scripts (`.ipynb` / `.py` / `.qmd` path or upload); deep-link / open instructions (no kernel)
+6. Register **artifacts** (figure/table) with provenance (notebook + analysis dataset)
+7. Roles: Owner / Investigator+PHI grant edit PHI tables; Collaborator/Viewer default without PHI table access; Analyst gets de-ID only
+8. Audit: `DATA_FIELD_PHI_MARK`, `DATA_CSV_EXPORT_DEID`, `NOTEBOOK_REGISTER`, …
 
 ## Stubbed / deferred
 
 - Live Zotero sync
-- Full PDF.js viewer / real highlight anchoring (page/highlight are stubs)
-- Rich CSL formatting in-browser (Pandoc `--citeproc` on export)
-- Python notebooks, tabular PHI capture, imaging vault (M2/M3)
+- Full PDF.js viewer / real highlight anchoring
+- Rich CSL formatting in-browser
+- **Imaging vault / DICOM** (M3)
+- Embedded Jupyter kernel, R, AI features
 - In-app Word preview
 
 ## Export without server Pandoc
@@ -72,15 +76,16 @@ pandoc manuscript.qmd --citeproc --bibliography=references.bib -o manuscript.tex
 # or: quarto render manuscript.qmd --to docx
 ```
 
-## API sketch (M1 additions)
+## API sketch (M2 additions)
 
-- `GET|POST /api/projects/:id/references`
-- `GET|DELETE /api/projects/:id/references/:refId`
-- `GET|POST /api/projects/:id/references/:refId/pdf`
-- `GET|POST /api/projects/:id/notes`
-- `PATCH|DELETE /api/projects/:id/notes/:noteId`
-- `GET|PUT /api/projects/:id/manuscript`
-- `POST /api/projects/:id/export?format=zip|docx|tex`
+- `GET|POST /api/projects/:id/data/fields`
+- `PATCH|DELETE /api/projects/:id/data/fields/:fieldId`
+- `GET|POST /api/projects/:id/data/rows`
+- `PATCH|DELETE /api/projects/:id/data/rows/:rowId`
+- `GET|POST /api/projects/:id/data/csv` (`?mode=raw|deid`)
+- `GET|POST /api/projects/:id/data/deid` · `GET .../deid/:exportId`
+- `GET|POST /api/projects/:id/notebooks` · `PATCH|DELETE .../notebooks/:id`
+- `GET|POST /api/projects/:id/artifacts` · `DELETE .../artifacts/:id`
 
 ## Postgres later
 

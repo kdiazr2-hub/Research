@@ -468,6 +468,45 @@ button:disabled {
   white-space: pre-wrap;
 }
 
+.table-scroll {
+  overflow-x: auto;
+}
+
+.check-inline {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  flex-direction: row !important;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.hint.warn-phi {
+  border: 1px solid #d9b4b4;
+  background: #fdf6f6;
+  color: var(--danger);
+  border-radius: 8px;
+  padding: 0.65rem 0.8rem;
+}
+
+.btn.secondary {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.btn.secondary:hover {
+  background: #eef7f6;
+  color: var(--accent);
+  text-decoration: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;

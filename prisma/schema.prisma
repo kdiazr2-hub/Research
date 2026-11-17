@@ -1,0 +1,77 @@
+// M0 spike: SQLite for local-first. Swap provider to postgresql + DATABASE_URL for Postgres later.
+// String constants stand in for enums (SQLite has no Prisma enum support in v5).
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String?
+  passwordHash String
+  locale       String       @default("es")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  memberships  Membership[]
+  auditLogs    AuditLog[]
+}
+
+model Project {
+  id                  String       @id @default(cuid())
+  name                String
+  description         String       @default("")
+  /// LITERATURE | DATA | ANALYSIS | WRITING
+  status              String       @default("LITERATURE")
+  /// CARE | PRISMA | OTHER (EQUATOR reporting guideline / study type)
+  reportingGuideline  String       @default("OTHER")
+  /// e.g. CARE 2013, PRISMA 2020
+  reportingGuidelineVersion String @default("n/a")
+  /// NONE | PHI | PHI_IMAGING
+  phiType             String       @default("NONE")
+  consentDocumented   Boolean      @default(false)
+  consentDocUrl       String?
+  legalBasis          String?
+  retentionDestroyAt  DateTime?
+  analysisDeidDefault Boolean      @default(true)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  memberships         Membership[]
+  auditLogs           AuditLog[]
+}
+
+model Membership {
+  id             String   @id @default(cuid())
+  projectId      String
+  userId         String
+  /// OWNER | INVESTIGATOR | COLLABORATOR | ANALYST | VIEWER
+  role           String   @default("VIEWER")
+  canViewPhi     Boolean  @default(false)
+  canViewImaging Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  projectId String?
+  action    String
+  metadata  String   @default("{}")
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([projectId, createdAt])
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+}

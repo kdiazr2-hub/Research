@@ -1,19 +1,6 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, Source_Serif_4 } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
-
-const body = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-ibm",
-});
-
-const display = Source_Serif_4({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-source",
-});
 
 export const metadata: Metadata = {
   title: "Investigación — Research Hub",
@@ -27,7 +14,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${body.variable} ${display.variable} antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:wght@500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

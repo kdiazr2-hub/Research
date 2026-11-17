@@ -14,6 +14,7 @@ import {
   REPORTING_GUIDELINES,
   REPORTING_GUIDELINE_VERSIONS,
 } from "@/lib/reporting-guidelines";
+import { regenerateChecklist } from "@/lib/checklist";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -22,6 +23,8 @@ const updateSchema = z.object({
   description: z.string().max(2000).optional(),
   status: z.enum(PROJECT_STATUSES).optional(),
   reportingGuideline: z.enum(REPORTING_GUIDELINES).optional(),
+  /** When switching guideline: keep checked/notes for matching item keys (default true). */
+  preserveChecklistMatching: z.boolean().optional(),
   phiType: z.enum(PHI_TYPES).optional(),
   consentDocumented: z.boolean().optional(),
   consentDocUrl: z.string().url().nullable().optional(),
@@ -121,6 +124,9 @@ export async function PATCH(req: Request, ctx: Ctx) {
   }
 
   const before = membership.project;
+  const guidelineChanging =
+    data.reportingGuideline !== undefined &&
+    data.reportingGuideline !== before.reportingGuideline;
 
   const project = await prisma.project.update({
     where: { id },
@@ -145,6 +151,23 @@ export async function PATCH(req: Request, ctx: Ctx) {
             : new Date(data.retentionDestroyAt),
     },
   });
+
+  let checklistRegen = null;
+  if (guidelineChanging && data.reportingGuideline) {
+    checklistRegen = await regenerateChecklist(id, data.reportingGuideline, {
+      preserveMatching: data.preserveChecklistMatching !== false,
+    });
+    await writeAudit({
+      userId: session.user.id,
+      projectId: id,
+      action: "GUIDELINE_CHANGE",
+      metadata: {
+        from: before.reportingGuideline,
+        to: data.reportingGuideline,
+        checklist: checklistRegen,
+      },
+    });
+  }
 
   await writeAudit({
     userId: session.user.id,
@@ -173,7 +196,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
     });
   }
 
-  return NextResponse.json(project);
+  return NextResponse.json({ ...project, checklistRegen });
 }
 
 export async function DELETE(_req: Request, ctx: Ctx) {

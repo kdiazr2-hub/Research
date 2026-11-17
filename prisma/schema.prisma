@@ -27,7 +27,7 @@ model Project {
   description         String       @default("")
   /// LITERATURE | DATA | ANALYSIS | WRITING
   status              String       @default("LITERATURE")
-  /// CARE | PRISMA | OTHER (EQUATOR reporting guideline / study type)
+  /// CARE | PRISMA | CONSORT | STROBE | SPIRIT | STARD | OTHER
   reportingGuideline  String       @default("OTHER")
   /// e.g. CARE 2013, PRISMA 2020
   reportingGuidelineVersion String @default("n/a")
@@ -42,6 +42,22 @@ model Project {
   updatedAt           DateTime     @updatedAt
   memberships         Membership[]
   auditLogs           AuditLog[]
+  checklistItems      ChecklistItem[]
+}
+
+/// Interactive EQUATOR checklist progress for a project.
+model ChecklistItem {
+  id        String   @id @default(cuid())
+  projectId String
+  itemKey   String
+  checked   Boolean  @default(false)
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, itemKey])
+  @@index([projectId])
 }
 
 model Membership {

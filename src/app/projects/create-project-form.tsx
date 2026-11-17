@@ -2,17 +2,17 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { GuidelineSelect } from "@/components/guideline-select";
 
 export function CreateProjectForm({
   labels,
+  locale,
 }: {
+  locale: string;
   labels: {
     projectName: string;
     description: string;
     reportingGuideline: string;
-    care: string;
-    prisma: string;
-    otherGeneric: string;
     phiType: string;
     phiNone: string;
     phi: string;
@@ -64,14 +64,11 @@ export function CreateProjectForm({
         {labels.description}
         <textarea name="description" maxLength={2000} />
       </label>
-      <label>
-        {labels.reportingGuideline}
-        <select name="reportingGuideline" defaultValue="OTHER">
-          <option value="CARE">{labels.care}</option>
-          <option value="PRISMA">{labels.prisma}</option>
-          <option value="OTHER">{labels.otherGeneric}</option>
-        </select>
-      </label>
+      <GuidelineSelect
+        label={labels.reportingGuideline}
+        locale={locale}
+        defaultValue="OTHER"
+      />
       <label>
         {labels.phiType}
         <select name="phiType" defaultValue="NONE">

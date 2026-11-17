@@ -322,6 +322,48 @@ button:disabled {
   padding: 1.5rem 0;
 }
 
+.section-outline {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+.checklist-scroll {
+  max-height: 420px;
+  overflow: auto;
+  padding-right: 0.35rem;
+}
+
+.checklist-group h3 {
+  margin: 0.75rem 0 0.4rem;
+  font-size: 0.92rem;
+  font-family: var(--font-display);
+  color: var(--muted);
+}
+
+.checklist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.checklist-row {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.checklist-notes {
+  width: 100%;
+  margin: 0.25rem 0 0 1.5rem;
+  font-size: 0.85rem;
+}
+
 @keyframes rise {
   from {
     opacity: 0;

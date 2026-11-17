@@ -507,6 +507,25 @@ button:disabled {
   text-decoration: none;
 }
 
+.stack-lg {
+  display: grid;
+  gap: 1.25rem;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+button.ghost:hover {
+  background: #eef7f6;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;

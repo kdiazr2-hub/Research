@@ -52,6 +52,7 @@ model Project {
   analysisExports     AnalysisExport[]
   notebooks           Notebook[]
   artifacts           AnalysisArtifact[]
+  imagingStudies      ImagingStudy[]
 }
 
 /// Interactive EQUATOR checklist progress for a project.
@@ -257,4 +258,41 @@ model AnalysisArtifact {
 
   @@index([projectId])
   @@index([notebookId])
+}
+
+/// Imaging vault study metadata + encrypted object path (NOT a PACS / DICOM viewer).
+model ImagingStudy {
+  id              String    @id @default(cuid())
+  projectId       String
+  /// Pseudonymized subject key linked to tabular subject (never raw MRN in working copies)
+  subjectKey      String
+  /// CT | MR | XR | US | NM | OT | …
+  modality        String    @default("OT")
+  studyDate       DateTime?
+  /// Internal accession stub (not hospital accession number)
+  accessionStub   String    @default("")
+  description     String    @default("")
+  fileName        String?
+  /// Relative path under STORAGE_ROOT vault (AES-GCM blob when key set)
+  vaultPath       String?
+  /// dicom | png | jpeg | nifti | other
+  fileKind        String    @default("other")
+  contentType     String    @default("application/octet-stream")
+  fileSize        Int       @default(0)
+  /// Vault-only identifiers captured at upload (JSON). Never copied to analysis/.
+  identifiersJson String    @default("{}")
+  /// Relative path to stripped working-copy metadata JSON (no pixels by default)
+  workingCopyPath String?
+  /// ACTIVE | MARKED_DELETE | PURGED
+  retentionStatus String    @default("ACTIVE")
+  markedDeleteAt  DateTime?
+  purgedAt        DateTime?
+  createdById     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  project         Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, studyDate])
+  @@index([projectId, retentionStatus])
+  @@index([projectId, subjectKey])
 }

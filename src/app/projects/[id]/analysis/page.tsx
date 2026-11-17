@@ -69,6 +69,8 @@ export default async function AnalysisPage({ params }: Props) {
         active="analysis"
         labels={projectNavLabels(t)}
       />
+      <p className="hint">{t.analysisDeidOnly}</p>
+      <p className="hint">{t.noImagingToNotebooks}</p>
       <AnalysisClient
         projectId={id}
         canRegister={canRegisterAnalysis(role)}

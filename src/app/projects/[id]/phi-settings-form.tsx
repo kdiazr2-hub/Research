@@ -23,6 +23,7 @@ export function PhiSettingsForm({
     consentDocUrl: string;
     legalBasis: string;
     analysisDeidDefault: boolean;
+    retentionDestroyAt: string;
   };
   labels: {
     projectName: string;
@@ -38,6 +39,7 @@ export function PhiSettingsForm({
     consentUrl: string;
     legalBasis: string;
     analysisDeid: string;
+    retentionDate: string;
     save: string;
     error: string;
     success: string;
@@ -79,6 +81,10 @@ export function PhiSettingsForm({
       payload.consentDocUrl = url || null;
       payload.legalBasis = String(fd.get("legalBasis") || "") || null;
       payload.analysisDeidDefault = fd.get("analysisDeidDefault") === "on";
+      const retention = String(fd.get("retentionDestroyAt") || "").trim();
+      payload.retentionDestroyAt = retention
+        ? new Date(retention).toISOString()
+        : null;
     }
 
     const res = await fetch(`/api/projects/${projectId}`, {
@@ -156,6 +162,14 @@ export function PhiSettingsForm({
               defaultChecked={initial.analysisDeidDefault}
             />
             {labels.analysisDeid}
+          </label>
+          <label>
+            {labels.retentionDate}
+            <input
+              name="retentionDestroyAt"
+              type="date"
+              defaultValue={initial.retentionDestroyAt}
+            />
           </label>
         </>
       ) : (

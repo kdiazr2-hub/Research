@@ -5,9 +5,12 @@ export type ProjectNavKey =
   | "library"
   | "notes"
   | "data"
+  | "imaging"
   | "analysis"
   | "manuscript"
-  | "export";
+  | "export"
+  | "security"
+  | "audit";
 
 export function ProjectNav({
   projectId,
@@ -21,9 +24,12 @@ export function ProjectNav({
     library: string;
     notes: string;
     data: string;
+    imaging: string;
     analysis: string;
     manuscript: string;
     export: string;
+    security: string;
+    audit: string;
   };
 }) {
   const items = [
@@ -31,6 +37,7 @@ export function ProjectNav({
     { key: "library" as const, href: `/projects/${projectId}/library`, label: labels.library },
     { key: "notes" as const, href: `/projects/${projectId}/notes`, label: labels.notes },
     { key: "data" as const, href: `/projects/${projectId}/data`, label: labels.data },
+    { key: "imaging" as const, href: `/projects/${projectId}/imaging`, label: labels.imaging },
     {
       key: "analysis" as const,
       href: `/projects/${projectId}/analysis`,
@@ -42,6 +49,12 @@ export function ProjectNav({
       label: labels.manuscript,
     },
     { key: "export" as const, href: `/projects/${projectId}/export`, label: labels.export },
+    {
+      key: "security" as const,
+      href: `/projects/${projectId}/security`,
+      label: labels.security,
+    },
+    { key: "audit" as const, href: `/projects/${projectId}/audit`, label: labels.audit },
   ];
 
   return (
